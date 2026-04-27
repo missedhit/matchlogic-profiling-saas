@@ -1,0 +1,93 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Abbreviations.archive" />
+    <None Remove="Resources\Abbreviations.xml" />
+    <None Remove="Resources\AdditionalAbbreviations.archive" />
+    <None Remove="Resources\AdditionalAbbreviations.xml" />
+    <None Remove="Resources\ccTLDs.xml" />
+    <None Remove="Resources\CommonNames.archive" />
+    <None Remove="Resources\CommonNames.xml" />
+    <None Remove="Resources\dataen_w_headers.archive" />
+    <None Remove="Resources\Gender.archive" />
+    <None Remove="Resources\Gender.xml" />
+    <None Remove="Resources\gTLDs.xml" />
+    <None Remove="Resources\last names only.archive" />
+    <None Remove="Resources\Nicknames for Dev.csv" />
+    <None Remove="Resources\populated places.archive" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Abbreviations.archive" />
+    <EmbeddedResource Include="Resources\Abbreviations.xml" />
+    <EmbeddedResource Include="Resources\AdditionalAbbreviations.archive" />
+    <EmbeddedResource Include="Resources\AdditionalAbbreviations.xml" />
+    <EmbeddedResource Include="Resources\ccTLDs.xml" />
+    <EmbeddedResource Include="Resources\CommonNames.archive" />
+    <EmbeddedResource Include="Resources\CommonNames.xml" />
+    <EmbeddedResource Include="Resources\dataen_w_headers.archive" />
+    <EmbeddedResource Include="Resources\Gender.archive" />
+    <EmbeddedResource Include="Resources\Gender.xml" />
+    <EmbeddedResource Include="Resources\gTLDs.xml" />
+    <EmbeddedResource Include="Resources\last names only.archive" />
+    <EmbeddedResource Include="Resources\Nicknames for Dev.csv" />
+    <EmbeddedResource Include="Resources\populated places.archive" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AsyncEnumerator" />
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" />
+    <PackageReference Include="ExcelDataReader" />
+    <PackageReference Include="ExcelDataReader.DataSet" />
+    <PackageReference Include="Hangfire.AspNetCore" />
+    <PackageReference Include="Hangfire.Mongo" />
+    <PackageReference Include="Keycloak.AuthServices.Authentication" />
+    <PackageReference Include="Keycloak.AuthServices.Authorization" />
+    <PackageReference Include="LiteDB" />
+    <PackageReference Include="MessagePack" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="MongoDB.Driver" />
+    <PackageReference Include="Neo4j.Driver" />
+    <PackageReference Include="FluentFTP" />
+    <PackageReference Include="SSH.NET" />
+    <PackageReference Include="AWSSDK.S3" />
+    <PackageReference Include="Azure.Storage.Blobs" />
+    <PackageReference Include="Google.Apis.Drive.v3" />
+    <PackageReference Include="Dropbox.Api" />
+    <PackageReference Include="Microsoft.Graph" />
+    <PackageReference Include="Microsoft.Identity.Client" />
+    <PackageReference Include="MySqlConnector" />
+    <PackageReference Include="NCrontab" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="NPOI" />
+    <PackageReference Include="Phonix" />
+    <PackageReference Include="SimMetrics.Net" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" />
+    <PackageReference Include="System.Text.Encoding.CodePages" />
+    <PackageReference Include="Unidecode.NET" />
+  </ItemGroup>
+
+  <ItemGroup>    
+    <ProjectReference Include="..\MatchLogic.Application\MatchLogic.Application.csproj" />
+    <ProjectReference Include="..\MatchLogic.Domain\MatchLogic.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup> 
+</Project>

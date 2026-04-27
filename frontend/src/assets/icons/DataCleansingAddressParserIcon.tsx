@@ -1,0 +1,23 @@
+import { SVGProps } from "react";
+
+export function DataCleansingAddressParserIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M7 5H6V7H7V5Z" fill="currentColor" />
+      <path d="M11 9H9V10H11V9Z" fill="currentColor" />
+      <path d="M7 9V8H6V10H8V9H7Z" fill="currentColor" />
+      <path d="M14 2H8V8H14V2Z" fill="currentColor" />
+      <path
+        d="M8.9425 14.9985L5.9095 13.071L2 13.9945V2H7V4H6V3H3V12.7305L6.0905 12.0005L9.0575 13.8865L11.409 13H13V10H12V9H14V14H11.591L8.9425 14.9985Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <path d="M32 4 L56 16 V48 L32 60 L8 48 V16 Z" fill="#F3E8FF" stroke="#5A189A" stroke-width="2.5"/>
+  <path d="M32 4 L32 60" stroke="#5A189A" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <path d="M8 16 L56 16" stroke="#5A189A" stroke-width="1.5"/>
+  <path d="M8 48 L56 48" stroke="#5A189A" stroke-width="1.5"/>
+  <text x="32" y="37" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#5A189A">S3</text>
+</svg>

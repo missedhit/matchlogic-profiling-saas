@@ -1,0 +1,13 @@
+name: Frontend Deploy
+
+# Placeholder — wires up in M1 after S3 bucket + CloudFront distribution provisioned.
+# Trigger on push to main; build + sync to S3; invalidate CloudFront cache.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "TODO (M1) — S3 sync + CloudFront invalidation"

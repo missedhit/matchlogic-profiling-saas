@@ -1,0 +1,22 @@
+import { SVGProps } from "react";
+
+export function DataImportColumnsIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect width="16" height="16" fill="white" fillOpacity="0.01" />
+      <path d="M13 2H12V14H13V2Z" fill="currentColor" />
+      <path
+        d="M9 3V13H7V3H9ZM9 2H7C6.73478 2 6.48043 2.10536 6.29289 2.29289C6.10536 2.48043 6 2.73478 6 3V13C6 13.2652 6.10536 13.5196 6.29289 13.7071C6.48043 13.8946 6.73478 14 7 14H9C9.26522 14 9.51957 13.8946 9.70711 13.7071C9.89464 13.5196 10 13.2652 10 13V3C10 2.73478 9.89464 2.48043 9.70711 2.29289C9.51957 2.10536 9.26522 2 9 2Z"
+        fill="currentColor"
+      />
+      <path d="M4 2H3V14H4V2Z" fill="currentColor" />
+    </svg>
+  );
+}

@@ -1,0 +1,339 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "@xyflow/react/dist/style.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+	--background: hsl(0 0% 100%);
+	--foreground: hsl(0 0% 0%);
+	--card: hsl(0 0% 100%);
+	--card-foreground: hsl(0 0% 0%);
+	--popover: hsl(0 0% 100%);
+	--popover-foreground: hsl(0 0% 0%);
+	--primary: hsl(271 74% 35%);
+	--primary-foreground: hsl(0 0% 100%);
+	--secondary: hsl(276 100% 83%);
+	--secondary-foreground: hsl(276 100% 14%);
+	--muted: hsl(0 0% 95%);
+	--muted-foreground: hsl(0 0% 24%);
+	--accent: hsl(276 100% 96%);
+	--accent-foreground: hsl(276 100% 14%);
+	/* --destructive: hsl(0 100% 50%); */
+	/* --destructive-foreground: hsl(0 0% 100%); */
+	--destructive: #fffbfa;
+	--destructive-foreground: #ef4444;
+	--border: hsl(0 0% 87%);
+	--input: hsl(0 0% 91%);
+	--ring: hsl(271 74% 35%);
+	--sidebar: hsla(271, 100%, 14%, 1);
+	--sidebar-foreground: hsla(279, 100%, 95%, 1);
+	--sidebar-accent: hsla(279, 100%, 95%, 1);
+	--sidebar-hover: hsla(270, 73%, 35%, 1);
+	--radius: 0.5rem;
+	--profile-primary: hsl(270, 73%, 35%);
+	--letters: hsla(270, 69%, 21%, 1);
+	--letters-only: hsla(270, 73%, 35%, 1);
+	--numbers: hsla(271, 70%, 47%, 1);
+	--numbers-only: hsla(270, 100%, 65%, 1);
+	--letters-and-numbers: hsla(260, 100%, 79%, 1);
+	--punctuation: hsla(260, 100%, 79%, 1);
+	--leading-spaces: hsla(260, 100%, 84%, 1);
+	--non-printable: hsla(260, 100%, 91%, 1);
+	--table-card-border: hsla(0, 0%, 95%, 1);
+	--sidebar-primary: hsl(240 5.9% 10%);
+	--sidebar-primary-foreground: hsl(0 0% 98%);
+	--sidebar-accent-foreground: hsl(240 5.9% 10%);
+	--sidebar-border: hsl(220 13% 91%);
+	--sidebar-ring: hsl(217.2 91.2% 59.8%);
+	--node-preview: #faf5ff;
+	--node-preview-foreground: #7924cb;
+	--node-background: #7924cb;
+	--node-handle-background: #7924cb;
+	--node-handle-border: #bd86f2;
+	--start-node-background: #ebfaf7;
+	--start-node-foreground: #00b894;
+	--end-node-background: #fdf4f2;
+	--end-node-foreground: #e17055;
+	--abyss-purple: #14002c;
+	--font-sans: var(--font-manrope);
+	--iris-mist: #fbf5ff;
+	--soft-lilac: #dbc9ff;
+
+	--badge-string: #E8E6F6;
+	--badge-numeric: #DDEAF6;
+	--badge-integer: #DFF3EC;
+	--badge-decimal: #E5E9F7;
+	--badge-float: #D8EFED;
+	--badge-datetime: #FCEFEA;
+	--badge-date: #E8E8E8;
+	--badge-time: #EDEDED;
+
+	--info-bg: #fffbeb;
+	--info-text: #d97706;
+	--success-bg: #ecfdf5;
+	--success-text: #059669;
+	--warning-bg: #fffbeb;
+	--warning-text: #d97706;
+	--error-bg: #fef2f2;
+	--error-text: #dc2626;
+}
+
+/* Sonner toast animations — enter from bottom, exit to bottom */
+[data-sonner-toast] {
+	animation: sonner-toast-in 0.3s ease-out !important;
+}
+[data-sonner-toast][data-removed="true"] {
+	animation: sonner-toast-out 0.3s ease-in forwards !important;
+}
+@keyframes sonner-toast-in {
+	from {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes sonner-toast-out {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+}
+
+/* Sonner toast icon colors — force per variant */
+[data-sonner-toast][data-type="info"] [data-icon] svg,
+[data-sonner-toast][data-type="warning"] [data-icon] svg {
+	color: #d97706 !important;
+}
+[data-sonner-toast][data-type="success"] [data-icon] svg {
+	color: #059669 !important;
+}
+[data-sonner-toast][data-type="error"] [data-icon] svg {
+	color: #dc2626 !important;
+}
+
+/* Sonner toast title/description — base gray for default variant, overridden per-type below */
+[data-sonner-toast] [data-title] {
+	color: #111827;
+}
+[data-sonner-toast] [data-description] {
+	color: #4b5563;
+}
+
+/* Sonner toast title/description text colors — match icon color per variant */
+[data-sonner-toast][data-type="success"] [data-title],
+[data-sonner-toast][data-type="success"] [data-description] {
+	color: var(--success-text);
+}
+[data-sonner-toast][data-type="error"] [data-title],
+[data-sonner-toast][data-type="error"] [data-description] {
+	color: var(--error-text);
+}
+[data-sonner-toast][data-type="info"] [data-title],
+[data-sonner-toast][data-type="info"] [data-description],
+[data-sonner-toast][data-type="warning"] [data-title],
+[data-sonner-toast][data-type="warning"] [data-description] {
+	color: var(--info-text);
+}
+
+* {
+	border-color: var(--border);
+}
+
+body {
+	background-color: var(--background);
+	color: var(--foreground);
+}
+
+.no-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+.hover-scrollbar {
+	overflow: hidden;
+}
+
+.hover-scrollbar:hover {
+	overflow: auto;
+}
+
+.hover-scrollbar-x {
+	overflow-x: hidden;
+}
+
+.hover-scrollbar-x:hover {
+	overflow-x: auto;
+}
+
+.custom-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(90, 24, 154, 0.3) rgba(246, 229, 255, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: rgba(246, 229, 255, 0.1);
+	border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgba(90, 24, 154, 0.3);
+	border-radius: 10px;
+	border: 2px solid rgba(246, 229, 255, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(90, 24, 154, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+	background: rgba(246, 229, 255, 0.1);
+}
+
+.dark {
+	--sidebar: hsl(240 5.9% 10%);
+	--sidebar-foreground: hsl(240 4.8% 95.9%);
+	--sidebar-primary: hsl(224.3 76.3% 48%);
+	--sidebar-primary-foreground: hsl(0 0% 100%);
+	--sidebar-accent: hsl(240 3.7% 15.9%);
+	--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+	--sidebar-border: hsl(240 3.7% 15.9%);
+	--sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+}
+
+.cleansing-sidebar {
+	--sidebar-width: 22rem;
+	--sidebar: hsl(0 0% 100%);
+	--sidebar-foreground: hsla(271, 100%, 14%, 1);
+	--sidebar-accent: hsla(279, 100%, 95%, 1);
+	--sidebar-hover: hsla(270, 73%, 35%, 1);
+	--sidebar-primary: hsla(271, 100%, 14%, 1);
+	--sidebar-primary-foreground: hsla(279, 100%, 95%, 1);
+	--sidebar-accent-foreground: hsla(279, 100%, 95%, 1);
+	--sidebar-border: hsla(271, 100%, 14%, 1);
+	--sidebar-ring: hsla(271, 100%, 14%, 1);
+}
+
+/* @layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+} */
+
+.dashed-edge .react-flow__edge-path {
+	stroke-dasharray:
+		20, 10; /* Creates a pattern of 5 units of dash followed by 5 units of gap */
+	animation: dash-animation 2s linear infinite;
+}
+
+@keyframes dash-animation {
+	from {
+		stroke-dashoffset: 30;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+/* Loader animation utility classes (used by ProfilingLoader and MatchResultsLoader) */
+.animate-scroll-up {
+	animation: scroll-up 20s linear infinite;
+}
+
+.scan-line {
+	position: absolute;
+	width: 100%;
+	height: 150px;
+	background: linear-gradient(
+		180deg,
+		transparent 0%,
+		rgba(139, 92, 246, 0.1) 25%,
+		rgba(139, 92, 246, 0.3) 50%,
+		rgba(139, 92, 246, 0.1) 75%,
+		transparent 100%
+	);
+	animation: scan 4s ease-in-out infinite;
+	box-shadow: 0 0 50px rgba(139, 92, 246, 0.3);
+}
+
+.particle {
+	position: absolute;
+	width: 4px;
+	height: 4px;
+	background: linear-gradient(
+		135deg,
+		rgba(139, 92, 246, 0.8),
+		rgba(168, 85, 247, 0.4)
+	);
+	border-radius: 50%;
+	animation: float linear infinite;
+	box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+/* Profiling Loader Animations */
+@keyframes scroll-up {
+	0% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(-50%);
+	}
+}
+
+@keyframes scan {
+	0% {
+		transform: translateY(-100%);
+	}
+	100% {
+		transform: translateY(100vh);
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(100vh) translateX(0);
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(-100px) translateX(20px);
+		opacity: 0;
+	}
+}

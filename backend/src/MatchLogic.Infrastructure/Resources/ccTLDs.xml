@@ -1,0 +1,1015 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="TLDs" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="TLDs">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TLD" type="xs:string" minOccurs="0" />
+                <xs:element name="Description" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <TLDs>
+    <TLD>ac</TLD>
+    <Description>Ascension Island </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ad</TLD>
+    <Description>Andorra</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ae</TLD>
+    <Description>United Arab Emirates</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>af</TLD>
+    <Description>Afghanistan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ag</TLD>
+    <Description>Antigua and Barbuda </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ai</TLD>
+    <Description>Anguilla</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>al</TLD>
+    <Description>Albania</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>am</TLD>
+    <Description>Armenia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>an</TLD>
+    <Description>Netherlands Antilles</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ao</TLD>
+    <Description>Angola</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>aq</TLD>
+    <Description>Antarctica</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ar</TLD>
+    <Description>Argentina</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>as</TLD>
+    <Description>American Samoa </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>at</TLD>
+    <Description>Austria </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>au</TLD>
+    <Description>Australia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>aw</TLD>
+    <Description>Aruba</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ax</TLD>
+    <Description>?land Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>az</TLD>
+    <Description>Azerbaijan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ba</TLD>
+    <Description>Bosnia and Herzegovina</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bb</TLD>
+    <Description>Barbados</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bd</TLD>
+    <Description>Bangladesh</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>be</TLD>
+    <Description>Belgium </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bf</TLD>
+    <Description>Burkina Faso</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bg</TLD>
+    <Description>Bulgaria</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bh</TLD>
+    <Description>Bahrain</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bi</TLD>
+    <Description>Burundi </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bj</TLD>
+    <Description>Benin</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bm</TLD>
+    <Description>Bermuda</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bn</TLD>
+    <Description>Brunei</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bo</TLD>
+    <Description>Bolivia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>br</TLD>
+    <Description>Brazil </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bs</TLD>
+    <Description>Bahamas </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bt</TLD>
+    <Description>Bhutan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bv</TLD>
+    <Description>Bouvet Island </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bw</TLD>
+    <Description>Botswana</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>by</TLD>
+    <Description>Belarus</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>bz</TLD>
+    <Description>Belize </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ca</TLD>
+    <Description>Canada</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cc</TLD>
+    <Description>Cocos (Keeling) Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cd</TLD>
+    <Description>Democratic Republic of the Congo </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cf</TLD>
+    <Description>Central African Republic</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cg</TLD>
+    <Description>Republic of the Congo </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ch</TLD>
+    <Description>Switzerland </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ci</TLD>
+    <Description>C�te d'Ivoire (Ivory Coast)</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ck</TLD>
+    <Description>Cook Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cl</TLD>
+    <Description>Chile</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cm</TLD>
+    <Description>Cameroon</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cn</TLD>
+    <Description>People's Republic of China </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>co</TLD>
+    <Description>Colombia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cr</TLD>
+    <Description>Costa Rica</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cu</TLD>
+    <Description>Cuba</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cv</TLD>
+    <Description>Cape Verde</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cx</TLD>
+    <Description>Christmas Island </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cy</TLD>
+    <Description>Cyprus</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>cz</TLD>
+    <Description>Czech Republic</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>de</TLD>
+    <Description>Germany</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>dj</TLD>
+    <Description>Djibouti </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>dk</TLD>
+    <Description>Denmark </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>dm</TLD>
+    <Description>Dominica</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>do</TLD>
+    <Description>Dominican Republic</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>dz</TLD>
+    <Description>Algeria</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ec</TLD>
+    <Description>Ecuador</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ee</TLD>
+    <Description>Estonia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>eg</TLD>
+    <Description>Egypt</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>eh</TLD>
+    <Description>Western Sahara </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>er</TLD>
+    <Description>Eritrea</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>es</TLD>
+    <Description>Spain </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>et</TLD>
+    <Description>Ethiopia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>eu</TLD>
+    <Description>European Union </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>fi</TLD>
+    <Description>Finland</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>fj</TLD>
+    <Description>Fiji </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>fk</TLD>
+    <Description>Falkland Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>fm</TLD>
+    <Description>Federated States of Micronesia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>fo</TLD>
+    <Description>Faroe Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>fr</TLD>
+    <Description>France</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ga</TLD>
+    <Description>Gabon</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gb</TLD>
+    <Description>United Kingdom </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gd</TLD>
+    <Description>Grenada</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ge</TLD>
+    <Description>Georgia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gf</TLD>
+    <Description>French Guiana</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gg</TLD>
+    <Description>Guernsey</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gh</TLD>
+    <Description>Ghana</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gi</TLD>
+    <Description>Gibraltar</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gl</TLD>
+    <Description>Greenland </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gm</TLD>
+    <Description>Gambia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gn</TLD>
+    <Description>Guinea</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gp</TLD>
+    <Description>Guadeloupe</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gq</TLD>
+    <Description>Equatorial Guinea</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gr</TLD>
+    <Description>Greece </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gs</TLD>
+    <Description>South Georgia and the South Sandwich Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gt</TLD>
+    <Description>Guatemala</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gu</TLD>
+    <Description>Guam</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gw</TLD>
+    <Description>Guinea-Bissau</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>gy</TLD>
+    <Description>Guyana</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>hk</TLD>
+    <Description>Hong Kong </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>hm</TLD>
+    <Description>Heard Island and McDonald Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>hn</TLD>
+    <Description>Honduras </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>hr</TLD>
+    <Description>Croatia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ht</TLD>
+    <Description>Haiti</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>hu</TLD>
+    <Description>Hungary </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>id</TLD>
+    <Description>Indonesia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ie</TLD>
+    <Description>Ireland</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>il</TLD>
+    <Description>Israel </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>im</TLD>
+    <Description>Isle of Man </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>in</TLD>
+    <Description>India </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>io</TLD>
+    <Description>British Indian Ocean Territory </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>iq</TLD>
+    <Description>Iraq</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ir</TLD>
+    <Description>Iran </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>is</TLD>
+    <Description>Iceland</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>it</TLD>
+    <Description>Italy</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>je</TLD>
+    <Description>Jersey</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>jm</TLD>
+    <Description>Jamaica</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>jo</TLD>
+    <Description>Jordan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>jp</TLD>
+    <Description>Japan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ke</TLD>
+    <Description>Kenya</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kg</TLD>
+    <Description>Kyrgyzstan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kh</TLD>
+    <Description>Cambodia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ki</TLD>
+    <Description>Kiribati</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>km</TLD>
+    <Description>Comoros</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kn</TLD>
+    <Description>Saint Kitts and Nevis</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kp</TLD>
+    <Description>North Korea</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kr</TLD>
+    <Description>South Korea</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kw</TLD>
+    <Description>Kuwait</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ky</TLD>
+    <Description>Cayman Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>kz</TLD>
+    <Description>Kazakhstan </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>la</TLD>
+    <Description>Laos </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lb</TLD>
+    <Description>Lebanon</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lc</TLD>
+    <Description>Saint Lucia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>li</TLD>
+    <Description>Liechtenstein </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lk</TLD>
+    <Description>Sri Lanka</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lr</TLD>
+    <Description>Liberia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ls</TLD>
+    <Description>Lesotho </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lt</TLD>
+    <Description>Lithuania</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lu</TLD>
+    <Description>Luxembourg</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>lv</TLD>
+    <Description>Latvia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ly</TLD>
+    <Description>Libya </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ma</TLD>
+    <Description>Morocco</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mc</TLD>
+    <Description>Monaco</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>md</TLD>
+    <Description>Moldova </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>me</TLD>
+    <Description>Montenegro</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mg</TLD>
+    <Description>Madagascar</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mh</TLD>
+    <Description>Marshall Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mk</TLD>
+    <Description>Republic of Macedonia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ml</TLD>
+    <Description>Mali</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mm</TLD>
+    <Description>Myanmar</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mn</TLD>
+    <Description>Mongolia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mo</TLD>
+    <Description>Macau</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mp</TLD>
+    <Description>Northern Mariana Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mq</TLD>
+    <Description>Martinique</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mr</TLD>
+    <Description>Mauritania</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ms</TLD>
+    <Description>Montserrat </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mt</TLD>
+    <Description>Malta</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mu</TLD>
+    <Description>Mauritius </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mv</TLD>
+    <Description>Maldives</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mw</TLD>
+    <Description>Malawi </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mx</TLD>
+    <Description>Mexico </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>my</TLD>
+    <Description>Malaysia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>mz</TLD>
+    <Description>Mozambique</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>na</TLD>
+    <Description>Namibia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>nc</TLD>
+    <Description>New Caledonia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ne</TLD>
+    <Description>Niger</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>nf</TLD>
+    <Description>Norfolk Island </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ng</TLD>
+    <Description>Nigeria</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ni</TLD>
+    <Description>Nicaragua</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>nl</TLD>
+    <Description>Netherlands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>no</TLD>
+    <Description>Norway</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>np</TLD>
+    <Description>Nepal</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>nr</TLD>
+    <Description>Nauru </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>nu</TLD>
+    <Description>Niue </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>nz</TLD>
+    <Description>New Zealand </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>om</TLD>
+    <Description>Oman</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pa</TLD>
+    <Description>Panama</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pe</TLD>
+    <Description>Peru</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pf</TLD>
+    <Description>French Polynesia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pg</TLD>
+    <Description>Papua New Guinea</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ph</TLD>
+    <Description>Philippines </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pk</TLD>
+    <Description>Pakistan </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pl</TLD>
+    <Description>Poland </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pm</TLD>
+    <Description>Saint Pierre and Miquelon</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pn</TLD>
+    <Description>Pitcairn Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pr</TLD>
+    <Description>Puerto Rico </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ps</TLD>
+    <Description>Palestine </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pt</TLD>
+    <Description>Portugal </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>pw</TLD>
+    <Description>Palau</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>py</TLD>
+    <Description>Paraguay</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>qa</TLD>
+    <Description>Qatar</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>re</TLD>
+    <Description>R�union</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ro</TLD>
+    <Description>Romania </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>rs</TLD>
+    <Description>Serbia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ru</TLD>
+    <Description>Russia </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>rw</TLD>
+    <Description>Rwanda</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sa</TLD>
+    <Description>Saudi Arabia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sb</TLD>
+    <Description>Solomon Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sc</TLD>
+    <Description>Seychelles </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sd</TLD>
+    <Description>Sudan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>se</TLD>
+    <Description>Sweden </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sg</TLD>
+    <Description>Singapore</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sh</TLD>
+    <Description>Saint Helena </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>si</TLD>
+    <Description>Slovenia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sj</TLD>
+    <Description>Svalbard and Jan Mayen islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sk</TLD>
+    <Description>Slovakia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sl</TLD>
+    <Description>Sierra Leone</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sm</TLD>
+    <Description>San Marino </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sn</TLD>
+    <Description>Senegal</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>so</TLD>
+    <Description>Somalia  </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sr</TLD>
+    <Description>Suriname </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>st</TLD>
+    <Description>S?o Tom� and Pr�ncipe </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>su</TLD>
+    <Description>Soviet Union </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sv</TLD>
+    <Description>El Salvador</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sy</TLD>
+    <Description>Syria </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>sz</TLD>
+    <Description>Swaziland </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tc</TLD>
+    <Description>Turks and Caicos Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>td</TLD>
+    <Description>Chad</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tf</TLD>
+    <Description>French Southern Territories</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tg</TLD>
+    <Description>Togo </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>th</TLD>
+    <Description>Thailand </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tj</TLD>
+    <Description>Tajikistan </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tk</TLD>
+    <Description>Tokelau </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tl</TLD>
+    <Description>East Timor </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tm</TLD>
+    <Description>Turkmenistan </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tn</TLD>
+    <Description>Tunisia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>to</TLD>
+    <Description>Tonga </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tp</TLD>
+    <Description>East Timor </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tr</TLD>
+    <Description>Turkey</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tt</TLD>
+    <Description>Trinidad and Tobago </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tv</TLD>
+    <Description>Tuvalu </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tw</TLD>
+    <Description>Taiwan </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>tz</TLD>
+    <Description>Tanzania</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ua</TLD>
+    <Description>Ukraine</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ug</TLD>
+    <Description>Uganda </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>uk</TLD>
+    <Description>United Kingdom </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>us</TLD>
+    <Description>United States </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>uy</TLD>
+    <Description>Uruguay</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>uz</TLD>
+    <Description>Uzbekistan</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>va</TLD>
+    <Description>Vatican City</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>vc</TLD>
+    <Description>Saint Vincent and the Grenadines </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ve</TLD>
+    <Description>Venezuela</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>vg</TLD>
+    <Description>British Virgin Islands </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>vi</TLD>
+    <Description>United States Virgin Islands</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>vn</TLD>
+    <Description>Vietnam</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>vu</TLD>
+    <Description>Vanuatu </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>wf</TLD>
+    <Description>Wallis and Futuna</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ws</TLD>
+    <Description>Samoa </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>ye</TLD>
+    <Description>Yemen</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>yt</TLD>
+    <Description>Mayotte</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>yu</TLD>
+    <Description>Serbia and Montenegro</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>za</TLD>
+    <Description>South Africa </Description>
+  </TLDs>
+  <TLDs>
+    <TLD>zm</TLD>
+    <Description>Zambia</Description>
+  </TLDs>
+  <TLDs>
+    <TLD>zw</TLD>
+    <Description>Zimbabwe</Description>
+  </TLDs>
+</NewDataSet>

@@ -1,0 +1,40 @@
+﻿<?xml version='1.0'?>
+<Obfuscator>
+  <Var name="InPath" value=".\bin\Release\net8.0\publish\win-x86" />
+  <Var name="OutPath" value=".\bin\Release\net8.0\publish\win-x86\Confused" />
+  <Var name="KeepPublicApi" value="true" />
+  <Var name="HidePrivateApi" value="true" />
+
+  <Module file="$(InPath)\MatchLogic.Domain.dll">
+    <SkipType name="*Interface" />
+    <SkipNamespace name="*.Interfaces" />
+  </Module>
+
+  <Module file="$(InPath)\MatchLogic.Application.dll">
+    <SkipType name="*Interface" />
+    <SkipNamespace name="*.Interfaces" />
+    <SkipMethod name="*" attrib="public" />
+    <ObfuscateMethod name="*" attrib="private" />
+    <ObfuscateMethod name="*" attrib="internal" />
+  </Module>
+
+  <Module file="$(InPath)\MatchLogic.Infrastructure.dll">
+     <SkipMethod name="*" attrib="public" />
+  <ObfuscateMethod name="*" attrib="internal" />
+  <ObfuscateMethod name="*" attrib="private" />
+  </Module>
+
+  <!-- Skip attributes that .NET runtime requires -->
+  <SkipType name="System.Runtime.CompilerServices.CompilerGeneratedAttribute" />
+  <SkipType name="System.Runtime.CompilerServices.InternalsVisibleToAttribute" />
+
+  <!-- Preserve Clean Architecture patterns -->
+  <SkipType name="*Repository" />
+  <SkipType name="*Service" />
+  <SkipType name="*Factory" />
+
+  <!-- Configuration -->
+  <AssemblySearchPath path="$(InPath)" />
+  <MapFileName outputName="map.txt" />
+  <MapFileName includeNames="true" />
+</Obfuscator>

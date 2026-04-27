@@ -1,0 +1,21 @@
+import { SVGProps } from "react";
+
+export function GeneralDragVerticalIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect width="16" height="16" fill="white" fillOpacity="0.01" />
+      <path
+        d="M8 8.9998L3 3.9998L3.7 3.2998L8 7.5998L12.3 3.2998L13 3.9998L8 8.9998Z"
+        fill="currentColor"
+      />
+      <path d="M14 10.9998H2V11.9998H14V10.9998Z" fill="currentColor" />
+    </svg>
+  );
+}

@@ -1,0 +1,32 @@
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="Abbreviations" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Abbreviations">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Abbreviation" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <Abbreviations>
+    <Abbreviation>LLS</Abbreviation>
+  </Abbreviations>
+  <Abbreviations>
+    <Abbreviation>DDS</Abbreviation>
+  </Abbreviations>
+  <Abbreviations>
+    <Abbreviation>INC</Abbreviation>
+  </Abbreviations>
+  <Abbreviations>
+    <Abbreviation>LLC</Abbreviation>
+  </Abbreviations>
+  <Abbreviations>
+    <Abbreviation>LTD</Abbreviation>
+  </Abbreviations>
+</NewDataSet>

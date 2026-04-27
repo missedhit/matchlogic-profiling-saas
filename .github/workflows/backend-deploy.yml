@@ -1,0 +1,13 @@
+name: Backend Deploy
+
+# Placeholder — wires up in M1 after ECR + ECS service provisioned.
+# Trigger on push to main; docker build; push to ECR; force ECS service redeploy.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "TODO (M1) — Docker build + ECR push + ECS service update"

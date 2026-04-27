@@ -1,0 +1,24 @@
+import { SVGProps } from "react";
+
+export function DataCleansingMinimizeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect width="16" height="16" fill="white" fillOpacity="0.01" />
+      <path
+        d="M2 9V10H5.293L1 14.291L1.707 15L6 10.707V14H7V9H2Z"
+        fill="currentColor"
+      />
+      <path
+        d="M15 1.708L14.296 1L10 5.293V2H9V7H14V6H10.707L15 1.708Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
