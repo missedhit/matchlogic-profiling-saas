@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install
         working-directory: frontend
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Type check
         working-directory: frontend
         run: npx tsc --noEmit
