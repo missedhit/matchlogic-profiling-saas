@@ -1,6 +1,5 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using MatchLogic.Application.Features.DataMatching.Comparators;
 using MatchLogic.Application.Features.Import;
 using MatchLogic.Application.Interfaces.Project;
 using MatchLogic.Domain.Import;

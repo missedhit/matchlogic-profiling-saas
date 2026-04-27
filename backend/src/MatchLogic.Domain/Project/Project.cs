@@ -1,6 +1,5 @@
 ﻿using MatchLogic.Domain.Entities.Common;
 using MatchLogic.Domain.Import;
-using MatchLogic.Domain.MatchConfiguration;
 using System;
 using System.Collections.Generic;
 using System.Linq;

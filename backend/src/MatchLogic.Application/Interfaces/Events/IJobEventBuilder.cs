@@ -1,4 +1,4 @@
-﻿using MatchLogic.Domain.CleansingAndStandaradization;
+﻿using MatchLogic.Domain.Entities.Common;
 using MatchLogic.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;

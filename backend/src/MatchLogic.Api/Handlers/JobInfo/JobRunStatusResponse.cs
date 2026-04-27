@@ -1,7 +1,7 @@
 ﻿using MatchLogic.Domain.Entities.Common;
 using System.Collections.Generic;
 using System;
-using MatchLogic.Domain.CleansingAndStandaradization;
+using MatchLogic.Domain.Entities.Common;
 using MatchLogic.Domain.Import;
 
 namespace MatchLogic.Api.Handlers.JobInfo;

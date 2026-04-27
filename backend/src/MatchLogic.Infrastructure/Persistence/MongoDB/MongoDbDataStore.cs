@@ -1,5 +1,4 @@
 ﻿using MatchLogic.Application.Extensions;
-using MatchLogic.Application.Features.DataMatching.FellegiSunter;
 using MatchLogic.Application.Interfaces.Events;
 using MatchLogic.Application.Interfaces.Persistence;
 using Microsoft.Extensions.Logging;
@@ -421,38 +420,6 @@ public partial class MongoDbDataStore : IDataStore
         });
 
         await Task.WhenAll(tasks);
-    }
-
-    public async Task InsertProbabilisticBatchAsync(string collectionName, IEnumerable<MatchResult> batch)
-    {
-        var sw = Stopwatch.StartNew();
-        var fullCollectionName = GetCollectionName(collectionName);
-
-        try
-        {
-            var collection = _database.GetCollection<BsonDocument>(fullCollectionName)
-                .WithWriteConcern(GetBulkWriteConcern());
-
-            var bsonDocs = batch.Select(MongoDbBsonConverter.SerializeToDocument).ToList();
-
-            if (bsonDocs.Count == 0)
-            {
-                _logger.LogWarning("Empty probabilistic batch provided for {Collection}", collectionName);
-                return;
-            }
-
-            await InsertBatchInternalAsync(collection, bsonDocs);
-
-            sw.Stop();
-            _logger.LogInformation(
-                "Inserted probabilistic batch of {Count} records into {Collection} in {ElapsedMs}ms",
-                bsonDocs.Count, collectionName, sw.ElapsedMilliseconds);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error inserting probabilistic batch into {Collection}", collectionName);
-            throw;
-        }
     }
 
     #endregion

@@ -10,7 +10,6 @@ using MatchLogic.Application.Interfaces.Security;
 using MatchLogic.Domain.Import;
 using MatchLogic.Domain.Project;
 using MatchLogic.Infrastructure.Project.Commands;
-using MatchLogic.Application.Licensing;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -34,7 +33,6 @@ public class DataImportCommand : BaseCommand
     private readonly IGenericRepository<DataSnapshot, Guid> _snapshotRepo;
     private readonly IGenericRepository<FileImport, Guid> _fileImportRepo;
     private readonly RemoteFileConnectorFactory _remoteFileConnectorFactory;
-    private readonly ILicenseService _licenseService;
 
     public DataImportCommand(
         IDataSourceService dataSourceService,
@@ -52,8 +50,7 @@ public class DataImportCommand : BaseCommand
         RemoteFileConnectorFactory remoteFileConnectorFactory,
         IGenericRepository<DataSnapshot, Guid> snapshotRepo = null,
         IGenericRepository<FileImport, Guid> fileImportRepo = null,
-        ISchemaValidationService schemaValidation = null,
-        ILicenseService licenseService = null)
+        ISchemaValidationService schemaValidation = null)
         : base(projectService, jobEventPublisher, projectRunRepository, stepJobRepository, genericRepository, logger)
     {
         _dataSourceService = dataSourceService;
@@ -68,22 +65,13 @@ public class DataImportCommand : BaseCommand
         _snapshotRepo = snapshotRepo;
         _fileImportRepo = fileImportRepo;
         _schemaValidation = schemaValidation;
-        _licenseService = licenseService;
     }
 
     protected override int NumberOfSteps => 2;
 
     protected override async Task<StepData> ExecCommandAsync(ICommandContext context, StepJob step, CancellationToken cancellationToken = default)
     {
-        // License check: block import if trial expired or record limit exceeded.
-        // This catches Hangfire-triggered imports that bypass the HTTP middleware.
-        if (_licenseService != null && !await _licenseService.IsImportAllowedAsync())
-        {
-            var info = await _licenseService.GetLicenseInfoAsync();
-            throw new InvalidOperationException(
-                $"Import blocked by license: {info.StatusMessage}");
-        }
-
+        // TODO (M4): Replace with IQuotaService two-phase enforcement (1000-record lifetime cap).
         var dataSourceId = step.DataSourceId.GetValueOrDefault();
         var dataSource = await _genericRepository.GetByIdAsync(dataSourceId, Constants.Collections.DataSources)
             ?? throw new InvalidOperationException($"DataSource {dataSourceId} not found.");
@@ -188,17 +176,8 @@ public class DataImportCommand : BaseCommand
 
         await _snapshotRepo.InsertAsync(snapshot, Constants.Collections.DataSnapshots);
 
-        // Step 7: Calculate trial record allowance (null = unlimited for full license)
+        // TODO (M4): Replace with IQuotaService.CalculateRemainingAsync — caps maxRowsToImport at remaining quota.
         long? maxRowsToImport = null;
-        if (_licenseService != null)
-        {
-            var licenseInfo = await _licenseService.GetLicenseInfoAsync();
-            if (licenseInfo.Type == Domain.Licensing.LicenseType.Trial && licenseInfo.RecordsLimit > 0)
-            {
-                var remaining = licenseInfo.RecordsLimit - licenseInfo.RecordsUsed;
-                maxRowsToImport = remaining > 0 ? remaining : 0;
-            }
-        }
 
         // Step 8: Import data using the correct import module
         IImportModule importModule = _recordHasher == null ?
@@ -246,9 +225,7 @@ public class DataImportCommand : BaseCommand
 
         await _genericRepository.UpdateAsync(freshDataSource, Constants.Collections.DataSources);
 
-        // Step 10: Increment license trial record count
-        if (_licenseService != null && freshDataSource.RecordCount > 0)
-            await _licenseService.IncrementRecordCountAsync(freshDataSource.RecordCount);
+        // TODO (M4): IQuotaService.CommitAsync(freshDataSource.RecordCount) — commit reservation to consumed.
 
         return stepData;
     }

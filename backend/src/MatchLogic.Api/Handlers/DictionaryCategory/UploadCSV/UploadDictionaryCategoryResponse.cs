@@ -1,2 +1,0 @@
-﻿namespace MatchLogic.Api.Handlers.DictionaryCategory.UploadCSV;
-public record UploadDictionaryCategoryResponse : BaseDictionaryCategoryDTO;

@@ -1,5 +1,4 @@
 ﻿using MatchLogic.Application.Interfaces.Persistence;
-using MatchLogic.Domain.Analytics;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -25,13 +24,6 @@ public partial class MongoDbDataStore
         "WeightedScore"
     };
 
-    private static Dictionary<string, (double MinScore, double MaxScore)> GetBandThresholds(List<ScoreBandDME> bands)
-    {
-        return bands.ToDictionary(
-            b => b.Label,
-            b => (b.MinThreshold, b.MaxThreshold)
-        );
-    }
     #region Main Query Method
 
     /// <summary>
@@ -45,8 +37,7 @@ public partial class MongoDbDataStore
             string filterText = null,
             string sortColumn = null,
             bool ascending = true,
-            string filters = "",
-            GroupQueryFilter groupFilter = null)
+            string filters = "")
     {
         try
         {
@@ -73,16 +64,6 @@ public partial class MongoDbDataStore
                 if (levelFilter != FilterDefinition<BsonDocument>.Empty)
                 {
                     combinedFilters.Add(levelFilter);
-                }
-            }
-
-            // 3. Group/Band filters (NEW - using score ranges)
-            if (groupFilter != null)
-            {
-                var groupFilters = BuildGroupFilters(groupFilter);
-                if (groupFilters.Any())
-                {
-                    combinedFilters.AddRange(groupFilters);
                 }
             }
 
@@ -117,9 +98,9 @@ public partial class MongoDbDataStore
 
             _logger.LogInformation(
                 "Query Results: Collection={Collection}, Page={Page}, Results={Count}/{Total}, " +
-                "TextFilter={HasText}, FieldFilters={HasFields}, GroupFilter={HasGroup}",
+                "TextFilter={HasText}, FieldFilters={HasFields}",
                 collectionName, pageNumber, data.Count, totalCount,
-                !string.IsNullOrEmpty(filterText), !string.IsNullOrEmpty(filters), groupFilter != null);
+                !string.IsNullOrEmpty(filterText), !string.IsNullOrEmpty(filters));
 
             return (data, totalCount);
         }
@@ -128,104 +109,6 @@ public partial class MongoDbDataStore
             _logger.LogError(ex, "Error fetching paged data for collection {Collection}", collectionName);
             throw;
         }
-    }
-
-    #endregion
-
-    #region Group Filter Builder
-
-    /// <summary>
-    /// Build filters for group/band queries using score ranges
-    /// </summary>
-    private List<FilterDefinition<BsonDocument>> BuildGroupFilters(GroupQueryFilter groupFilter)
-    {
-        var filters = new List<FilterDefinition<BsonDocument>>();
-        var filterBuilder = Builders<BsonDocument>.Filter;
-
-        // Band filtering via score range (OPTIMAL approach)
-        if (!string.IsNullOrEmpty(groupFilter.BandLabel))
-        {
-            var bandThresholds = GetBandThresholds(groupFilter.Bands);
-
-            if (bandThresholds.TryGetValue(groupFilter.BandLabel, out var thresholds))
-            {
-                // Use >= and < for boundaries (Excellent: [0.9, 1.01))
-                filters.Add(filterBuilder.Gte("Metadata.avg_match_score", thresholds.MinScore));
-                filters.Add(filterBuilder.Lt("Metadata.avg_match_score", thresholds.MaxScore));
-
-                _logger.LogDebug(
-                    "Band filter: {Band} (score >= {Min} AND < {Max})",
-                    groupFilter.BandLabel, thresholds.MinScore, thresholds.MaxScore);
-            }
-            else
-            {
-                _logger.LogWarning("Unknown band label: {Band}", groupFilter.BandLabel);
-                filters.Add(filterBuilder.Eq("_id", ObjectId.Empty));
-            }
-        }
-        // Alternative: Direct score range (if passed from UI/MatchSummary)
-        else if (groupFilter.MinScore.HasValue || groupFilter.MaxScore.HasValue)
-        {
-            if (groupFilter.MinScore.HasValue)
-            {
-                filters.Add(filterBuilder.Gte("Metadata.avg_match_score", groupFilter.MinScore.Value));
-            }
-
-            if (groupFilter.MaxScore.HasValue)
-            {
-                filters.Add(filterBuilder.Lt("Metadata.avg_match_score", groupFilter.MaxScore.Value));
-            }
-
-            _logger.LogDebug(
-                "Score range filter: {Min} - {Max}",
-                groupFilter.MinScore, groupFilter.MaxScore);
-        }
-
-        // Direct GroupId filter (for small lists only, e.g., user selection)
-        if (groupFilter.GroupIds != null && groupFilter.GroupIds.Any())
-        {
-            var groupIdList = groupFilter.GroupIds.ToList();
-
-            if (groupIdList.Count > 1000)
-            {
-                _logger.LogWarning(
-                    "Large GroupId list ({Count} IDs) - consider using band filter instead",
-                    groupIdList.Count);
-            }
-
-            filters.Add(filterBuilder.In("GroupId", groupIdList));
-
-            _logger.LogDebug("GroupId filter: {Count} IDs", groupIdList.Count);
-        }
-
-        // Additional metadata filters
-        if (groupFilter.MinGroupSize.HasValue)
-        {
-            filters.Add(filterBuilder.Gte("Metadata.size", groupFilter.MinGroupSize.Value));
-        }
-
-        if (groupFilter.MaxGroupSize.HasValue)
-        {
-            filters.Add(filterBuilder.Lte("Metadata.size", groupFilter.MaxGroupSize.Value));
-        }
-
-        if (groupFilter.MinMatchScore.HasValue)
-        {
-            // Note: This is different from band filtering - allows further refinement
-            filters.Add(filterBuilder.Gte("Metadata.avg_match_score", groupFilter.MinMatchScore.Value));
-        }
-
-        if (groupFilter.MaxMatchScore.HasValue)
-        {
-            filters.Add(filterBuilder.Lte("Metadata.avg_match_score", groupFilter.MaxMatchScore.Value));
-        }
-
-        if (groupFilter.IsClique.HasValue)
-        {
-            filters.Add(filterBuilder.Eq("Metadata.is_clique", groupFilter.IsClique.Value));
-        }
-
-        return filters;
     }
 
     #endregion

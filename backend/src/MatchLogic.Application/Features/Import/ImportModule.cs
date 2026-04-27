@@ -3,6 +3,7 @@ using MatchLogic.Application.Interfaces.Import;
 using MatchLogic.Application.Interfaces.Persistence;
 using MatchLogic.Application.Interfaces.Project;
 using MatchLogic.Domain.Entities;
+using MatchLogic.Domain.Entities.Common;
 using MatchLogic.Domain.Project;
 using Microsoft.Extensions.Logging;
 using System;

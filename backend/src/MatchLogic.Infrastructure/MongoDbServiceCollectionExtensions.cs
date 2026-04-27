@@ -112,11 +112,7 @@ public static class MongoDbServiceCollectionExtensions
                     loggerFactory.CreateLogger<MongoDbDataStore>());
             });
 
-            // Fallback to InMemory store
-            stores[StoreType.InMemory] = new Lazy<IDataStore>(() =>
-                new InMemoryStore(loggerFactory.CreateLogger<InMemoryStore>()));
-
-            // Map LiteDb to MongoDB for backwards compatibility
+            // InMemory + LiteDb fallbacks removed during saas-extract — SaaS is MongoDB-only.
             stores[StoreType.LiteDb] = stores[StoreType.MongoDB];
             stores[StoreType.ProgressLiteDb] = stores[StoreType.ProgressMongoDB];
 

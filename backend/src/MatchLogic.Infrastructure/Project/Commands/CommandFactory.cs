@@ -22,17 +22,11 @@ public class CommandFactory : ICommandFactory
     {
         _serviceProvider = serviceProvider;
         _commands = new Dictionary<StepType, Type>
-    {
-        { StepType.Import, typeof(DataImportCommand) },
-        { StepType.Profile, typeof(DataProfilingCommand) },
-        { StepType.AdvanceProfile , typeof(AdvanceDataProfilingCommand) },
-        { StepType.Cleanse, typeof(DataCleansingCommand) },
-        { StepType.Match, typeof(MatchingCommand) },
-         { StepType.Merge, typeof(MasterRecordDeterminationCommand) },
-        { StepType.Overwrite, typeof(FieldOverwriteCommand) },
-        { StepType.Export, typeof(FinalExportCommand) },
-        // Add other handlers here
-    };
+        {
+            { StepType.Import, typeof(DataImportCommand) },
+            { StepType.Profile, typeof(DataProfilingCommand) },
+            { StepType.AdvanceProfile, typeof(AdvanceDataProfilingCommand) },
+        };
     }
 
     public ICommand GetCommand(StepType stepType)

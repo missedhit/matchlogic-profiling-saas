@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using MatchLogic.Api.Handlers.Cleansing.Get;
-using MatchLogic.Api.Handlers.ColumnNotes;
+﻿using MatchLogic.Api.Handlers.ColumnNotes;
 using MatchLogic.Api.Handlers.ColumnNotes.Get;
 using MatchLogic.Api.Handlers.ColumnNotes.Update;
 using MatchLogic.Domain.Project;

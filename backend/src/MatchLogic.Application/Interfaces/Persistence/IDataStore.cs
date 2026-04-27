@@ -1,7 +1,4 @@
-﻿using MatchLogic.Application.Features.DataMatching.FellegiSunter;
-using MatchLogic.Application.Interfaces.Events;
-using MatchLogic.Application.Features.DataMatching.FellegiSunter;
-using MatchLogic.Application.Interfaces.Events;
+﻿using MatchLogic.Application.Interfaces.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +6,6 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MatchLogic.Domain.Analytics;
 
 namespace MatchLogic.Application.Interfaces.Persistence;
 public interface IDataStore : IDisposable
@@ -42,8 +38,7 @@ public interface IDataStore : IDisposable
        string filterText = null,
        string sortColumn = null,
        bool ascending = true,
-       string filters = "",
-            GroupQueryFilter groupFilter = null);
+       string filters = "");
     Task<(IEnumerable<IDictionary<string, object>> Data, int TotalCount)> GetPagedWithSmartFilteringAndProjectionAsync(
         string collectionName,
         int pageNumber,
@@ -57,7 +52,6 @@ public interface IDataStore : IDisposable
 
     Task SampleAndStoreTempData(string sourceCollectionName, string tempCollectionName, double maxPairs);
     IAsyncEnumerable<IDictionary<string, object>> GetStreamFromTempCollection(string _tempCollectionName, CancellationToken cancellationToken);
-    Task InsertProbabilisticBatchAsync(string collectionName, IEnumerable<MatchResult> batch);
     Task BulkInsertAsync<T>(IEnumerable<T> entity, string collectionName);
     Task<bool> UpdateByFieldAsync<TField>(
     IDictionary<string, object> data, string collectionName, string fieldName, TField fieldValue);
@@ -76,30 +70,3 @@ public interface IDataStore : IDisposable
     Task CreateGroupFilterIndexesAsync(string collectionName);
 }
 
-#region Filter and Validation Models
-
-/// <summary>
-/// Group query filter options
-/// </summary>
-public class GroupQueryFilter
-{
-    public List<ScoreBandDME> Bands { get; set; }
-    // Option 1: Band filtering (recommended for large sets)
-    public string BandLabel { get; set; }
-
-    // Option 2: Direct score range (alternative to BandLabel)
-    public double? MinScore { get; set; }
-    public double? MaxScore { get; set; }
-
-    // Option 3: Direct GroupId filter (only for small lists)
-    public IEnumerable<int> GroupIds { get; set; }
-
-    // Additional filters
-    public int? MinGroupSize { get; set; }
-    public int? MaxGroupSize { get; set; }
-    public double? MinMatchScore { get; set; }
-    public double? MaxMatchScore { get; set; }
-    public bool? IsClique { get; set; }
-}
-
-#endregion

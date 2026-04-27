@@ -2,7 +2,7 @@
 using MatchLogic.Application.Interfaces.Events;
 using MatchLogic.Application.Interfaces.Persistence;
 using MatchLogic.Application.Interfaces.Project;
-using MatchLogic.Domain.CleansingAndStandaradization;
+using MatchLogic.Domain.Entities.Common;
 using MatchLogic.Domain.Import;
 using MatchLogic.Domain.Project;
 using Microsoft.Extensions.Logging;

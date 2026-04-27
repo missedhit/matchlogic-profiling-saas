@@ -1,6 +1,6 @@
 ﻿using MatchLogic.Application.Events.Builders;
 using MatchLogic.Application.Interfaces.Events;
-using MatchLogic.Domain.CleansingAndStandaradization;
+using MatchLogic.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,8 +58,8 @@ public class JobEventPublisher : IJobEventPublisher
 
 
     /// <summary>
-    /// Publish ProjectRun completion event via MediatR
-    /// This is handled by ProjectRunCompletedEventHandler which updates scheduler statistics
+    /// Publish ProjectRun completion event via MediatR. SaaS slice has no subscribers
+    /// (workflow scheduler removed in saas-extract); kept as a no-op for future hookups.
     /// </summary>
     public Task PublishRunCompletedAsync(ProjectRunCompletedEvent runEvent, CancellationToken cancellationToken = default)
     {
