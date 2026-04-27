@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "@xyflow/react/dist/style.css";
 
 @custom-variant dark (&:is(.dark *));
 

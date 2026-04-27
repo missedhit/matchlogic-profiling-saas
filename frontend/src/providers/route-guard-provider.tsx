@@ -25,7 +25,7 @@ import {
 // TODO (M1 proper, in new SaaS repo): replace with a single-page provider once
 // auto-create-project on signup is wired up.
 
-const LAST_ROUTE_KEY = "matchlogic_last_routes";
+const LAST_ROUTE_KEY = "profiler_last_routes";
 
 interface RouteGuardContextType {
 	currentProject: Project | null;

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System;
-using Microsoft.AspNetCore.Identity.Data;
 using MatchLogic.Api.Handlers.RegexInfo.ResetSystemDefaults;
 using MatchLogic.Application.Identity;
 

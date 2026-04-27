@@ -10,18 +10,11 @@ const ROUTE_LABELS: Record<string, string> = {
   "project-management": "Project Management",
   "data-import": "Data Import",
   "data-profiling": "Data Profiling",
-  "data-cleansing": "Data Cleansing",
-  "match-configuration": "Match Configuration",
-  "match-definitions": "Match Definitions",
-  "match-results": "Match Results",
-  "merge-and-survivorship": "Merge & Survivorship",
-  "final-export": "Final Export",
   settings: "Settings",
 };
 
 const SUB_ROUTE_LABELS: Record<string, string> = {
   "data-sources": "Data Sources",
-  "select-table": "Select Table",
   "column-mapping": "Column Mapping",
   preview: "Preview",
 };
@@ -43,9 +36,7 @@ export default function Breadcrumbs() {
 
   const isProjectManagement = moduleSlug === "project-management";
   const showDatasourceChip =
-    (pathname.startsWith("/data-profiling") ||
-      pathname.startsWith("/data-cleansing")) &&
-    dataSourceId;
+    pathname.startsWith("/data-profiling") && dataSourceId;
   const selectedDs = dataSources?.find((ds) => ds.id === dataSourceId);
 
   // Determine the final (current) page title

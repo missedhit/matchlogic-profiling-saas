@@ -1,3 +1,4 @@
+using MatchLogic.Api.Auth;
 using MatchLogic.Api.Common;
 using MatchLogic.Api.Configurations;
 using MatchLogic.Api.Endpoints;
@@ -21,7 +22,6 @@ using MatchLogic.Application.Common;
 // Profiling SaaS Startup — slimmed from main-product Startup during saas-extract.
 // Removed: Desktop/Keycloak dual-mode auth, RBAC policies, LiveSearch rate limiter,
 // License middleware, Hangfire dashboard, all non-profiling endpoint registrations.
-// TODO (M1 proper, in new SaaS repo): wire Cognito JWT bearer here.
 public class Startup
 {
     public IConfiguration Configuration { get; }
@@ -33,8 +33,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Bare auth scaffold — Cognito JWT bearer registration goes here in M1 proper.
-        services.AddAuthentication();
+        services.AddCognitoJwtAuth(Configuration);
+        services.AddAuthorization();
         services.AddSwaggerSetup();
 
         services.AddCompressionSetup();

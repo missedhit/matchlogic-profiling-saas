@@ -23,8 +23,8 @@ const manrope = Manrope({
 const fontsList = [inter.variable, manrope.variable];
 
 export const metadata: Metadata = {
-	title: "MatchLogic - Data Matching Solution",
-	description: "Advanced data matching and cleansing platform",
+	title: "MatchLogic Profiler",
+	description: "Free data profiling for CSV and Excel files",
 	icons: {
 		icon: "/logos/ml_favicon.svg",
 	},

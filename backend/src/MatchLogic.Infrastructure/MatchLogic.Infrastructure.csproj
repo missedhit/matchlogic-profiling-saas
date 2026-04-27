@@ -49,11 +49,8 @@
     <PackageReference Include="ExcelDataReader.DataSet" />
     <PackageReference Include="Hangfire.AspNetCore" />
     <PackageReference Include="Hangfire.Mongo" />
-    <PackageReference Include="Keycloak.AuthServices.Authentication" />
-    <PackageReference Include="Keycloak.AuthServices.Authorization" />
     <PackageReference Include="LiteDB" />
     <PackageReference Include="MessagePack" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
