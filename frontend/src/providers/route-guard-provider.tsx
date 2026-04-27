@@ -1,5 +1,8 @@
+"use client";
+
 import { useDataSourceQuery } from "@/hooks/use-data-source-query";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-store";
+import { useAuth } from "@/hooks/use-auth";
 import { toast } from "@/components/ui/sonner";
 import { Datasource, Project } from "@/models/api-responses";
 import { dataImportActions } from "@/modules/DataImport/store/data-import-slice";
@@ -21,9 +24,8 @@ import {
 // Profiling SaaS RouteGuard — slimmed from main-product version during saas-extract.
 // Removed: license blocking, pipeline-stage redirects (Match*, Survivorship, FinalExport),
 // remoteConnections clearing, purgeAllModuleState, oauth/settings/scheduler bypass.
-// For the SaaS variant, only project + datasource context are gated.
-// TODO (M1 proper, in new SaaS repo): replace with a single-page provider once
-// auto-create-project on signup is wired up.
+// For the SaaS variant, only project + datasource context are gated. Auth gating sits
+// at the top: unauthenticated visitors get redirected to /login before any project work.
 
 const LAST_ROUTE_KEY = "profiler_last_routes";
 
@@ -62,6 +64,7 @@ export const RouteGuardProvider = ({ children }: RouteGuardProviderProps) => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const dispatch = useAppDispatch();
+	const { isInitialized: authInitialized, isAuthenticated } = useAuth();
 	const [dataSourceId, setDataSourceId] = useState<string>("");
 	const [importing, setImporting] = useState<boolean>(false);
 	const [oldRoute, setOldRoute] = useState<string | null>(null);
@@ -85,6 +88,12 @@ export const RouteGuardProvider = ({ children }: RouteGuardProviderProps) => {
 	const dataSourceQuery = useDataSourceQuery({
 		projectId: selectedProject?.id,
 	});
+
+	useEffect(() => {
+		if (authInitialized && !isAuthenticated) {
+			router.replace("/login");
+		}
+	}, [authInitialized, isAuthenticated, router]);
 
 	const projectIdFromUrl = searchParams.get("projectId");
 	const dataSourceIdFromUrl = searchParams.get("dataSourceId");
@@ -284,10 +293,12 @@ export const RouteGuardProvider = ({ children }: RouteGuardProviderProps) => {
 	}, [pathname]);
 
 	const shouldBlock =
-		!isLoading &&
-		!selectedProject &&
-		!projectIdFromUrl &&
-		pathname !== "/project-management";
+		!authInitialized ||
+		!isAuthenticated ||
+		(!isLoading &&
+			!selectedProject &&
+			!projectIdFromUrl &&
+			pathname !== "/project-management");
 
 	const contextValue = {
 		dataSourceId,

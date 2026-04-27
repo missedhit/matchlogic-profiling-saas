@@ -8,9 +8,7 @@ import {
 } from "../store/uiSlice";
 import type { AppDispatch, RootState } from "../store";
 import { toast } from "@/components/ui/sonner";
-// Bearer token injection — re-wired to Cognito ID token in M1 proper.
-// During saas-extract: no token attached; backend runs without auth locally.
-const getAccessToken = (): string | undefined => undefined;
+import { getIdTokenSync as getAccessToken } from "@/lib/cognito";
 
 interface ToastConfig {
 	successTitle?: string;

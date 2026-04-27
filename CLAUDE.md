@@ -86,7 +86,8 @@ Sidebar collapses to these 3. No NextStepBanner, no pipeline-stage gating beyond
 | **Phase A** | Extracted from main MatchLogic, kill list executed, compiles clean | ✅ Done |
 | **§13 cleanup** | Dead config/packages/icons/artifacts removed; tests deleted; rebrand pass | ✅ Done |
 | **M1a** | Backend `CognitoJwtSetup` + JwtBearer package + dev appsettings | ✅ Done |
-| **M1b–d** | FE Cognito shim + auth pages → provision Cognito/Atlas → Dockerfile/Fargate/CF/ACM/R53 | ⬜ Next |
+| **M1b** | FE `CognitoProvider` shim + signup/login/verify/account pages + `useAuth`/`apiFetch` rewire | ✅ Done |
+| **M1c–d** | Provision Cognito/Atlas → Dockerfile/Fargate/CF/ACM/R53 | ⬜ Next |
 | **M2** | S3 upload flow + presigned PUTs + profile job runs end-to-end | ⬜ |
 | **M3** | New `POST /api/DataProfile/Export/{projectId}/{dataSourceId}` (CSV/JSON) + UI button | ⬜ |
 | **M4** | WAF + Turnstile + IQuotaService + Redis token buckets + abuse scoring + GuardDuty | ⬜ |

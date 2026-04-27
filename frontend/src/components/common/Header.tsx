@@ -18,10 +18,10 @@ import { useAuth } from "@/hooks/use-auth";
 
 // Profiling SaaS Header — slimmed from main-product version during saas-extract.
 // Removed: CleansingPageHeader, RunNotificationBell, Keycloak admin console link,
-// User Management button. TODO (M1 proper): wire Cognito-backed account dropdown.
+// User Management button.
 export default function Header() {
 	const pathname = usePathname();
-	const { username, email, initials, logout, authEnabled } = useAuth();
+	const { username, email, initials, logout, goToProfile, authEnabled } = useAuth();
 
 	return (
 		<header className="border-b bg-background px-6 py-3 flex items-center">
@@ -72,6 +72,12 @@ export default function Header() {
 							{authEnabled && (
 								<>
 									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										onClick={goToProfile}
+										className="cursor-pointer"
+									>
+										Account
+									</DropdownMenuItem>
 									<DropdownMenuItem onClick={logout} className="cursor-pointer">
 										Logout
 									</DropdownMenuItem>

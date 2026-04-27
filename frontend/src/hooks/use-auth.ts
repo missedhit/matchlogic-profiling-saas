@@ -1,26 +1,32 @@
-import { useAppSelector } from "@/hooks/use-store";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-store";
 import {
+	clearAuth,
 	selectIsAuthenticated,
 	selectIsInitialized,
 	selectCurrentUser,
 } from "@/store/authSlice";
+import { signOut as cognitoSignOut } from "@/lib/cognito";
 
-// Profiling SaaS use-auth — slimmed from main-product version during saas-extract.
-// Removed: Keycloak getKeycloak()/accountManagement()/logout() calls.
-// TODO (M1 proper, in new SaaS repo): re-wire to Cognito sign-out + account page.
 export function useAuth() {
+	const router = useRouter();
+	const dispatch = useAppDispatch();
 	const isAuthenticated = useAppSelector(selectIsAuthenticated);
 	const isInitialized = useAppSelector(selectIsInitialized);
 	const currentUser = useAppSelector(selectCurrentUser);
 
-	const authEnabled = false;
+	const authEnabled = true;
 
 	const logout = () => {
-		// no-op until Cognito wiring lands in M1
+		cognitoSignOut();
+		dispatch(clearAuth());
+		router.push("/login");
 	};
 
 	const goToProfile = () => {
-		// no-op until /account page lands in M1
+		router.push("/account");
 	};
 
 	const hasRole = (role: string): boolean => currentUser.roles.includes(role);
@@ -43,7 +49,7 @@ export function useAuth() {
 		authEnabled,
 		...currentUser,
 		initials,
-		accountUrl: "",
+		accountUrl: "/account",
 		logout,
 		goToProfile,
 		hasRole,

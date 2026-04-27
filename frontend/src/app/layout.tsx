@@ -3,8 +3,6 @@ import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import "./globals.css";
-import Sidebar from "../components/common/Sidebar";
-import Header from "../components/common/Header";
 import { Providers } from "./providers";
 import { cn } from "@/lib/utils";
 import { WebVitals } from "@/components/common/web-vitals";
@@ -39,19 +37,7 @@ export default function RootLayout({
 		<html lang="en" className={cn(fontsList.join(" "), "overflow-hidden")}>
 			<body className="custom-scrollbar">
 				{process.env.NODE_ENV === "development" && <WebVitals />}
-				<Providers>
-					<div className="flex h-screen overflow-hidden">
-						<Sidebar />
-						<div className="flex flex-col flex-1 overflow-hidden">
-							<Header />
-							<div className="relative flex-1 overflow-hidden">
-								<main className="flex-1 overflow-auto bg-background p-8 h-full">
-									{children}
-								</main>
-							</div>
-						</div>
-					</div>
-				</Providers>
+				<Providers>{children}</Providers>
 				<SonnerToaster
 					theme="light"
 					closeButton

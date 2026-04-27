@@ -1,7 +1,5 @@
-import React from "react";
-import ProjectManagementPage from "./project-management/page";
-import { redirect } from "next/navigation";
+import { AuthRedirect } from "@/components/common/auth-redirect";
 
 export default function App() {
-  return redirect("/project-management")
+	return <AuthRedirect />;
 }

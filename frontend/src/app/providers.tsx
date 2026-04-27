@@ -6,12 +6,8 @@ import { Provider } from "react-redux";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/store/query-client";
-import { JobStateProvider } from "@/providers/job-state-provider";
-import { RouteGuardProvider } from "@/providers/route-guard-provider";
+import { CognitoProvider } from "@/providers/cognito-provider";
 
-// Profiling SaaS providers — slimmed from main-product providers during saas-extract.
-// Removed: KeycloakProvider, LicenseStatusLoader, FullscreenBanner, UnsavedChangesContext.
-// TODO (M1 proper, in new SaaS repo): wrap with CognitoProvider here.
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (
 		<Provider store={store}>
@@ -21,9 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 					localStorage.getItem("enableDevTools") === "true" && (
 						<ReactQueryDevtools initialIsOpen={false} />
 					)}
-				<RouteGuardProvider>
-					<JobStateProvider>{children}</JobStateProvider>
-				</RouteGuardProvider>
+				<CognitoProvider>{children}</CognitoProvider>
 			</QueryClientProvider>
 		</Provider>
 	);
