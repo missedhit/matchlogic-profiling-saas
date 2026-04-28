@@ -1,18 +1,30 @@
 # Infrastructure
 
-CloudFormation templates for the Profiling SaaS AWS deployment.
+AWS CloudFormation + MongoDB Atlas Terraform for the Profiling SaaS deployment. Region: `us-east-1`. Single environment (`dev`) until M1d; production gets its own stacks.
 
-**Status:** scaffold only — actual templates land in M1+ alongside the deployment work.
+## Templates
 
-## Planned templates (per [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) §6–§7)
+### CloudFormation — `cloudformation/`
 
-| Template | Resources |
-|---|---|
-| `cloudformation/network.yml` | VPC, public/private subnets, NAT, route tables, security groups |
-| `cloudformation/compute.yml` | ECS cluster, ALB, target group, Fargate service + task definition, ECR repo |
-| `cloudformation/data.yml` | S3 bucket (uploads + lifecycle), ElastiCache Redis, MongoDB Atlas peering |
-| `cloudformation/auth.yml` | Cognito User Pool, app client, identity pool, SES domain |
-| `cloudformation/edge.yml` | CloudFront distributions (FE + API), WAF web ACLs, ACM cert, Route 53 records |
-| `cloudformation/safeguards.yml` | AWS Budgets, SNS topic, kill-switch Lambda, SSM Parameter Store flag, GuardDuty |
+| Template | Resources | Status |
+|---|---|---|
+| `auth.yml` | Cognito User Pool, App Client (public SPA, SRP auth, no client secret) | M1c |
+| `network.yml` | VPC, public/private subnets, NAT, route tables, security groups | M1d |
+| `compute.yml` | ECS cluster, ALB, target group, Fargate service + task definition, ECR repo | M1d |
+| `data.yml` | S3 bucket (uploads + lifecycle), ElastiCache Redis | M2/M4 |
+| `edge.yml` | CloudFront distributions (FE + API), WAF web ACLs, ACM cert, Route 53 records | M1d |
+| `safeguards.yml` | AWS Budgets, SNS topic, kill-switch Lambda, SSM Parameter Store flag, GuardDuty | M5 |
 
-Region: `us-east-1`. Single environment to start (`prod`); add `staging` after launch.
+Deploy `auth.yml` per the [M1C provisioning runbook](../docs/M1C-PROVISIONING.md).
+
+### Terraform — `terraform/`
+
+MongoDB Atlas can't be CloudFormation'd cleanly — Atlas lives outside AWS. Atlas resources are Terraform.
+
+| Module | Resources | Status |
+|---|---|---|
+| `terraform/atlas/` | Atlas project, M10 cluster, DB user, IP allowlist | M1c |
+
+Provider auth is via `MONGODB_ATLAS_PUBLIC_KEY` / `MONGODB_ATLAS_PRIVATE_KEY` env vars. DB user password via `TF_VAR_db_password`. Never commit `terraform.tfvars` or state files (gitignored).
+
+Deploy per the [M1C provisioning runbook](../docs/M1C-PROVISIONING.md).

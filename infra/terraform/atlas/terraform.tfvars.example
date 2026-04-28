@@ -1,0 +1,14 @@
+# Copy to terraform.tfvars and fill. Do NOT commit terraform.tfvars.
+# Pass db_password via env var instead: $env:TF_VAR_db_password = "..." (PowerShell)
+#                                       export TF_VAR_db_password="..."  (bash)
+
+atlas_org_id = "REPLACE_ME"   # cloud.mongodb.com → Settings → Organization Settings → Organization ID
+project_name = "profiler-saas-dev"
+cluster_name = "profiler-dev"
+region       = "US_EAST_1"
+
+ip_access_list = [
+  { cidr = "203.0.113.42/32", comment = "alice-dev" },
+  # Add more dev IPs or office CIDRs as needed.
+  # Production switches to VPC peering in M1d — do NOT add 0.0.0.0/0.
+]

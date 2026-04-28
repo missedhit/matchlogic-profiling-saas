@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  MatchLogic Profiling SaaS — Cognito User Pool + public SPA App Client.
+  M1c scope. SES integration is intentionally not wired here; default Cognito
+  sender is used for smoke tests and switched to SES in a follow-up before
+  launch (default sender is rate-limited to ~50 emails/day).
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, prod]
+    Default: dev
+    Description: Environment suffix used in resource names.
+
+  PoolName:
+    Type: String
+    Default: profiler-saas
+    Description: Base name for the User Pool.
+
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      UserPoolName: !Sub "${PoolName}-${Environment}"
+      DeletionProtection: ACTIVE
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate:
+          - email
+      MfaConfiguration: "OFF"
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          TemporaryPasswordValidityDays: 3
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailSubject: "MatchLogic Profiler — verify your email"
+        EmailMessage: |
+          Welcome to MatchLogic Profiler.
+
+          Your verification code is {####}. It expires in 24 hours.
+
+          If you did not sign up, ignore this email.
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+      UserPoolTags:
+        Project: profiler-saas
+        Environment: !Ref Environment
+
+  AppClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Sub "${PoolName}-spa-${Environment}"
+      GenerateSecret: false
+      PreventUserExistenceErrors: ENABLED
+      EnableTokenRevocation: true
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      SupportedIdentityProviders:
+        - COGNITO
+      AccessTokenValidity: 60
+      IdTokenValidity: 60
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+      ReadAttributes:
+        - email
+        - email_verified
+      WriteAttributes:
+        - email
+
+Outputs:
+  UserPoolId:
+    Description: Cognito User Pool ID — paste into NEXT_PUBLIC_COGNITO_USER_POOL_ID and Cognito:UserPoolId.
+    Value: !Ref UserPool
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolId"
+
+  UserPoolClientId:
+    Description: Cognito App Client ID — paste into NEXT_PUBLIC_COGNITO_CLIENT_ID and Cognito:ClientId.
+    Value: !Ref AppClient
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolClientId"
+
+  UserPoolArn:
+    Description: User Pool ARN. Useful for IAM policies (e.g. AccountCleanupJob in M5).
+    Value: !GetAtt UserPool.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolArn"
+
+  Region:
+    Description: AWS region — paste into NEXT_PUBLIC_COGNITO_REGION and Cognito:Region.
+    Value: !Ref AWS::Region
