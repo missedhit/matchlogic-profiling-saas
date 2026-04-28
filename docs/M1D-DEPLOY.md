@@ -279,5 +279,157 @@ Total parameters: 7. Total cost: $0/mo. The ECS task definition we
 write in Step 5 will reference these by ARN and inject their plaintext
 values as environment variables into the container at startup.
 
-**Next: Step 4 — VPC + networking**, where we'll create the network
-plumbing that the Fargate task and ALB will live inside.
+---
+
+## Steps 4 + 5 — VPC, ECS Fargate cluster, ALB
+
+**Goal:** the API container actually runs in AWS, listening on a public
+ALB hostname. After this step you'll be able to `curl` a long
+AWS-generated URL and get `200 OK` back from `/api/HealthCheck/`.
+
+These two steps are bundled into one CloudFormation template
+(`infra/cloudformation/compute.yml`) because they share resources and
+only one environment exists. We'll split them later if we add staging.
+
+**Cost while running:** ~$40/mo (~$17 Fargate + ~$22 ALB + ~$1 logs).
+The runbook section 5.5 covers how to pause / fully tear down.
+
+### 4.1 — Open the Atlas IP allowlist
+
+The Fargate task will connect to your Atlas cluster. Fargate's public IP
+rotates between restarts, so we need a wildcard in the Atlas allowlist
+for now. (For launch we'll switch to VPC peering — see launch-prep.)
+
+1. Open https://cloud.mongodb.com → log in → click your project
+   `profiler-saas-dev`.
+2. Left sidebar → **Network Access**.
+3. Click **+ Add IP Address** (top-right).
+4. **Access List Entry:** `0.0.0.0/0` (yes, all-zeroes).
+5. **Comment:** `Fargate dev — REMOVE BEFORE LAUNCH`.
+6. Click **Confirm**.
+
+The list should now contain two entries: your home IP (or whatever was
+there) and `0.0.0.0/0`. **Don't remove the existing entries** — your
+local backend still needs them.
+
+### 4.2 — Create the compute stack (CloudFormation)
+
+1. Open https://us-east-1.console.aws.amazon.com/cloudformation/home →
+   verify region reads **N. Virginia**.
+
+2. Click **Create stack** → **With new resources (standard)**.
+
+3. **Specify template** screen:
+   - Choose **Upload a template file**.
+   - Click **Choose file** → select `infra/cloudformation/compute.yml`.
+   - Click **Next**.
+
+4. **Specify stack details** screen:
+   - **Stack name:** `profiler-saas-compute-dev`
+   - Leave all parameters at their defaults — `EcrRepositoryUri` already
+     points at your dev ECR repo's `:latest` tag.
+   - Click **Next**.
+
+5. **Configure stack options** screen:
+   - Scroll to the bottom. **Capabilities** section — check the box
+     **"I acknowledge that AWS CloudFormation might create IAM resources
+     with custom names."**
+     *(Required because the template creates the task execution role and
+     task role — both IAM. Without this checkbox the stack create will
+     fail with `Requires capabilities: [CAPABILITY_IAM]`.)*
+   - Click **Next**.
+
+6. **Review** screen:
+   - Scroll to the bottom and click **Submit**.
+
+7. Wait for the stack to reach **CREATE_COMPLETE** (~3-5 min). The
+   slowest resource is the ALB (~2 min to provision). Refresh the
+   **Events** tab while it works — you'll see Vpc → Subnets → ALB →
+   TargetGroup → TaskDefinition → Service in roughly that order.
+
+   If the stack fails with `RESOURCE_FAILED` on the ECS Service, the
+   most common cause is that the `:latest` image isn't in ECR yet —
+   verify the GitHub Actions workflow finished (Step 2.4) before
+   creating this stack.
+
+### 4.3 — Capture the outputs
+
+Click the **Outputs** tab. Three values matter; copy them to your notepad.
+
+| Key | What to do with it |
+|---|---|
+| `AlbDnsName` | Used in the next sub-step to test. Looks like `profiler-saas-dev-alb-1234567890.us-east-1.elb.amazonaws.com` |
+| `AlbHostedZoneId` | Needed for Route 53 alias records in step 7. |
+| `AlbArn` | Listener-443 (step 6) attaches here. |
+
+### 4.4 — Wait for the task to become healthy
+
+The Service is created by CloudFormation, but the first Fargate task
+takes another ~60-90 seconds to:
+1. Pull the image from ECR (~15 sec)
+2. Start the .NET runtime (~10 sec)
+3. Connect to Mongo Atlas (~5 sec)
+4. Pass two consecutive health checks (~60 sec — we configured 30s
+   intervals, requiring 2 healthy)
+
+To watch progress:
+
+1. Open https://us-east-1.console.aws.amazon.com/ecs/v2/clusters/profiler-saas-dev/services
+2. Click the service `profiler-saas-dev-api`.
+3. **Tasks** tab — you should see one task in **PROVISIONING** →
+   **PENDING** → **RUNNING**. It's RUNNING when the container started,
+   but not yet HEALTHY.
+4. Click **Last status** column header to refresh. Wait for the
+   **Health status** to read **Healthy** (~2 min after RUNNING).
+
+If the task flips between RUNNING and STOPPED with task IDs changing,
+the container is crashing. Click into a STOPPED task → **Logs** tab to
+see why. Common causes:
+- **Mongo connection refused / timeout:** Atlas allowlist still hasn't
+  propagated, or the connection string in SSM is malformed (extra
+  whitespace, missing query params).
+- **Container exited with code 1 immediately:** likely a missing
+  required env var. Check the task's environment variables for any
+  `Cognito__*` or `MongoDB__*` reading as `(empty)`.
+
+### 4.5 — Verify with curl
+
+From any terminal:
+
+```bash
+curl -i http://<paste-AlbDnsName-here>/api/HealthCheck/
+```
+
+Expected response:
+
+```
+HTTP/1.1 200 OK
+Content-Length: 4
+Content-Type: text/plain; charset=utf-8
+
+"OK"
+```
+
+🎉 If you got that, **the API is live on AWS**. The hostname is ugly
+(it's the auto-generated ALB DNS) — steps 6+7 swap that for
+`api.profiler.matchlogic.io`.
+
+### 4.6 — Pause / tear down
+
+While the stack runs, you pay ~$40/mo. Three options to reduce cost:
+
+**Pause Fargate only (~$22/mo for ALB):** edit the stack →
+**Update stack** → re-upload `compute.yml` → set `DesiredCount` to `0`.
+The task stops; the ALB stays. Resume by setting it back to `1`.
+
+**Full pause ($0):** **Delete stack**. All resources go away. Recreate
+later by repeating section 4.2.
+
+**Keep running (~$40/mo):** the simplest, leaves the API reachable
+24/7 for testing.
+
+---
+
+**Next: Step 6 — ACM certificate** for `*.profiler.matchlogic.io`,
+which we attach to the ALB in step 7 to enable HTTPS, then point
+Route 53 records at it.
