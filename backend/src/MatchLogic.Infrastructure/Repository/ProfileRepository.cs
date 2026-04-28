@@ -37,94 +37,81 @@ public class ProfileRepository : GenericRepository<ProfileResult, Guid>, IProfil
         await _dataStore.DeleteCollection(collectionName);
         await _dataStore.DeleteCollection(rowReferenceCollectionName);
 
-        // Clear document ID tracking list
         profileResult.RowReferenceDocumentIds = new List<Guid>();
 
-        // REMOVED unnecessary type check - virtual property handles both types correctly
+        // Buffer all RowReferenceDocuments and bulk-insert in one round-trip.
+        // The original per-document InsertAsync loop spawned 1000+ network round-trips
+        // per profile and was unworkable against MongoDB Atlas (~300ms WAN latency).
+        var documents = new List<RowReferenceDocument>();
 
-        // Process each column
-        // This works correctly for both ProfileResult and AdvancedProfileResult
-        // When profileResult is AdvancedProfileResult, the virtual property returns advanced profiles
         foreach (var columnPair in profileResult.ColumnProfiles)
         {
             var columnName = columnPair.Key;
             var columnProfile = columnPair.Value;
 
-            // Initialize document ID dictionaries
             columnProfile.CharacteristicRowDocumentIds = new Dictionary<ProfileCharacteristic, Guid>();
             columnProfile.PatternMatchRowDocumentIds = new Dictionary<string, Guid>();
             columnProfile.ValueRowDocumentIds = new Dictionary<string, Guid>();
 
-            // Process characteristic rows
             if (characteristicRowsByColumn.TryGetValue(columnName, out var characteristicRows))
             {
-                foreach (var characteristicPair in characteristicRows)
+                foreach (var pair in characteristicRows)
                 {
-                    var key = characteristicPair.Key;
-                    var documentId = await SaveRowReferenceDocumentAsync(
-                        profileResult.Id,
-                        columnName,
-                        ReferenceType.Characteristic,
-                        key.ToString(),
-                        characteristicPair.Value,
-                        rowReferenceCollectionName);
-
-                    // Store document ID for retrieval
-                    columnProfile.CharacteristicRowDocumentIds[key] = documentId;
-
-                    // Add to profile's tracking list
-                    profileResult.RowReferenceDocumentIds.Add(documentId);
+                    var doc = BuildRowReferenceDocument(
+                        profileResult.Id, columnName, ReferenceType.Characteristic, pair.Key.ToString(), pair.Value);
+                    columnProfile.CharacteristicRowDocumentIds[pair.Key] = doc.Id;
+                    profileResult.RowReferenceDocumentIds.Add(doc.Id);
+                    documents.Add(doc);
                 }
             }
 
-            // Process pattern rows
             if (patternRowsByColumn.TryGetValue(columnName, out var patternRows))
             {
-                foreach (var patternPair in patternRows)
+                foreach (var pair in patternRows)
                 {
-                    var documentId = await SaveRowReferenceDocumentAsync(
-                        profileResult.Id,
-                        columnName,
-                        ReferenceType.Pattern,
-                        patternPair.Key,
-                        patternPair.Value,
-                        rowReferenceCollectionName);
-
-                    // Store document ID for retrieval
-                    columnProfile.PatternMatchRowDocumentIds[patternPair.Key] = documentId;
-
-                    // Add to profile's tracking list
-                    profileResult.RowReferenceDocumentIds.Add(documentId);
+                    var doc = BuildRowReferenceDocument(
+                        profileResult.Id, columnName, ReferenceType.Pattern, pair.Key, pair.Value);
+                    columnProfile.PatternMatchRowDocumentIds[pair.Key] = doc.Id;
+                    profileResult.RowReferenceDocumentIds.Add(doc.Id);
+                    documents.Add(doc);
                 }
             }
 
-            // Process value rows
             if (valueRowsByColumn.TryGetValue(columnName, out var valueRows))
             {
-                foreach (var valuePair in valueRows)
+                foreach (var pair in valueRows)
                 {
-                    var documentId = await SaveRowReferenceDocumentAsync(
-                        profileResult.Id,
-                        columnName,
-                        ReferenceType.Value,
-                        valuePair.Key,
-                        valuePair.Value,
-                        rowReferenceCollectionName);
-
-                    // Store document ID for retrieval
-                    columnProfile.ValueRowDocumentIds[valuePair.Key] = documentId;
-
-                    // Add to profile's tracking list
-                    profileResult.RowReferenceDocumentIds.Add(documentId);
+                    var doc = BuildRowReferenceDocument(
+                        profileResult.Id, columnName, ReferenceType.Value, pair.Key, pair.Value);
+                    columnProfile.ValueRowDocumentIds[pair.Key] = doc.Id;
+                    profileResult.RowReferenceDocumentIds.Add(doc.Id);
+                    documents.Add(doc);
                 }
             }
         }
 
-        // Save the profile result
+        if (documents.Count > 0)
+            await _dataStore.BulkInsertAsync(documents, rowReferenceCollectionName);
+
         await _dataStore.InsertAsync(profileResult, collectionName);
 
         return profileResult.Id;
     }
+
+    private static RowReferenceDocument BuildRowReferenceDocument(
+        Guid profileId,
+        string columnName,
+        ReferenceType type,
+        string key,
+        List<RowReference> rows) => new()
+    {
+        Id = Guid.NewGuid(),
+        ProfileResultId = profileId,
+        ColumnName = columnName,
+        Type = type,
+        Key = key,
+        Rows = rows
+    };
 
     /// <summary>
     /// Save a row reference document

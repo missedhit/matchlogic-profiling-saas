@@ -2,6 +2,9 @@ using MatchLogic.Api.Auth;
 using MatchLogic.Api.Common;
 using MatchLogic.Api.Configurations;
 using MatchLogic.Api.Endpoints;
+using MatchLogic.Application.Auth;
+using MatchLogic.Application.Identity;
+using MatchLogic.Domain.Auth.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -34,11 +37,22 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddCognitoJwtAuth(Configuration);
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            // SaaS has a single user role (customer). Endpoints carried over from the main
+            // product still call .RequireAuthorization("projects.read") etc; register every
+            // permission name as "must be authenticated" so those calls succeed with a valid
+            // Cognito token. Real role splits land in M5+ if/when an admin surface ships.
+            foreach (var perm in AppPermissions.All())
+            {
+                options.AddPolicy(perm, p => p.RequireAuthenticatedUser());
+            }
+        });
         services.AddSwaggerSetup();
 
         services.AddCompressionSetup();
         services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         services.AddApplicationSetup(configuration: this.Configuration);
         services.AddMediatRSetup();

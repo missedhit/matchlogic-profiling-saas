@@ -151,23 +151,20 @@ public static class ApplicationSetup
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+        services.AddScoped<IJobStatusRepository, JobStatusRepository>();
+        // IProfileRepository is registered in AddDataProfiling.
 
-        var repositoryTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(s => s.GetTypes())
-            .Where(t =>
-                t.IsClass &&
-                !t.IsAbstract &&
-                t.GetInterfaces().Any(i =>
-                    i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IGenericRepository<,>)));
+        // Application services kept after the orphan prune.
+        services.AddScoped<IDataSourceService, DataSourceService>();
+        services.AddScoped<IFileImportService, FileImportService>();
+        services.AddScoped<ISchemaValidationService, SchemaValidationService>();
+        services.AddScoped<IColumnFilter, ColumnFilter>();
 
-        foreach (var implementationType in repositoryTypes)
-        {
-            var iface = implementationType.GetInterfaces().FirstOrDefault(i =>
-                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IGenericRepository<,>));
-            if (iface != null)
-                services.AddScoped(iface, implementationType);
-        }
+        // Hangfire commands resolved by CommandFactory at job-execution time.
+        services.AddScoped<DataImportCommand>();
+        services.AddScoped<DataProfilingCommand>();
+        services.AddScoped<AdvanceDataProfilingCommand>();
+        services.AddSingleton<MatchLogic.Application.Interfaces.Common.IRecordHasher, SHA256RecordHasher>();
 
         return services;
     }
