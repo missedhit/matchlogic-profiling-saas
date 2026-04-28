@@ -1,0 +1,5 @@
+# Claude Code runtime artifacts (locks, caches, per-session state).
+# Only settings.json should be tracked from this directory.
+*
+!.gitignore
+!settings.json

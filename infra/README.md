@@ -9,13 +9,15 @@ AWS CloudFormation + MongoDB Atlas Terraform for the Profiling SaaS deployment. 
 | Template | Resources | Status |
 |---|---|---|
 | `auth.yml` | Cognito User Pool, App Client (public SPA, SRP auth, no client secret) | M1c |
-| `network.yml` | VPC, public/private subnets, NAT, route tables, security groups | M1d |
-| `compute.yml` | ECS cluster, ALB, target group, Fargate service + task definition, ECR repo | M1d |
+| `ecr.yml` | ECR private repository (image scanning, immutable tags, lifecycle policy) | M1d step 2 |
+| `network.yml` | VPC, public/private subnets, NAT, route tables, security groups | M1d step 5 |
+| `compute.yml` | ECS cluster, ALB, target group, Fargate service + task definition | M1d step 5 |
 | `data.yml` | S3 bucket (uploads + lifecycle), ElastiCache Redis | M2/M4 |
-| `edge.yml` | CloudFront distributions (FE + API), WAF web ACLs, ACM cert, Route 53 records | M1d |
+| `edge.yml` | CloudFront distributions (FE + API), WAF web ACLs, ACM cert, Route 53 records | M1d step 6+7 |
 | `safeguards.yml` | AWS Budgets, SNS topic, kill-switch Lambda, SSM Parameter Store flag, GuardDuty | M5 |
 
-Deploy `auth.yml` per the [M1C provisioning runbook](../docs/M1C-PROVISIONING.md).
+- Deploy `auth.yml` per the [M1C provisioning runbook](../docs/M1C-PROVISIONING.md).
+- Deploy `ecr.yml` per the [M1D deploy runbook](../docs/M1D-DEPLOY.md).
 
 ### Terraform — `terraform/`
 
