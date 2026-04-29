@@ -47,6 +47,10 @@ public class FileBasedDataSourceValidator : AbstractValidator<Guid>
     {
         var fileImport = await _fileImportRepository.GetByIdAsync(guid, Constants.Collections.ImportFile);
         if (fileImport == null) return false;
+        // M2: S3-uploaded files have an empty FilePath; S3Key is the source of truth.
+        // ConfirmUploadHandler already verified the S3 object exists at upload time.
+        if (!string.IsNullOrEmpty(fileImport.S3Key)) return true;
+        // Legacy multipart-upload path: check the local directory still exists.
         return Path.Exists(fileImport.FilePath);
     }
 }
