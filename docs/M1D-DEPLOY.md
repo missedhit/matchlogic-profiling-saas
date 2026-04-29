@@ -639,3 +639,73 @@ OK
 - **Pre-launch** — replace `0.0.0.0/0` Atlas allowlist with VPC peering
   or static NAT IP, migrate IAM static keys to OIDC federation, set
   Cognito deletion protection ON, wire SES properly.
+
+---
+
+## Step 8 — Auto-redeploy on push to main
+
+**Goal:** every commit to `main` that touches `backend/` not only pushes
+a new image to ECR but also tells ECS to pull it and restart the task.
+After this, your code-to-production loop is one `git push`.
+
+The workflow file changes (`Force ECS service redeploy` + `Wait for
+service stability` steps) are already committed. The only thing missing
+is permissions — the `github-actions-backend-deploy` IAM user can push
+to ECR but can't yet call ECS.
+
+### 8.1 — Add the ECS deploy policy
+
+1. Open https://us-east-1.console.aws.amazon.com/iam/home → left sidebar
+   → **Policies** → **Create policy** (orange button).
+
+2. Click the **JSON** tab and replace the contents with:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "EcsForceRedeploy",
+         "Effect": "Allow",
+         "Action": [
+           "ecs:UpdateService",
+           "ecs:DescribeServices"
+         ],
+         "Resource": "arn:aws:ecs:us-east-1:274020917421:service/profiler-saas-dev/profiler-saas-dev-api"
+       }
+     ]
+   }
+   ```
+
+3. Click **Next**.
+   - **Policy name:** `profiler-saas-ecs-deploy`
+   - Click **Create policy**.
+
+### 8.2 — Attach it to the deploy user
+
+1. Left sidebar → **Users** → click `github-actions-backend-deploy`.
+2. **Permissions** tab → **Add permissions** → **Attach policies directly**.
+3. Search for `profiler-saas-ecs-deploy`. Tick the checkbox.
+4. **Next** → **Add permissions**.
+
+The user now has both policies: `profiler-saas-ecr-push` (existing) +
+`profiler-saas-ecs-deploy` (new).
+
+### 8.3 — Verify
+
+The next push to main touching `backend/` will run the full pipeline:
+build → push → force redeploy → wait for stability. ~5-7 min total.
+
+To force-trigger now without code changes:
+
+1. https://github.com/missedhit/matchlogic-profiling-saas/actions
+2. **Backend Deploy** → **Run workflow** → **Run workflow**.
+
+Watch the run. The "Force ECS service redeploy" step should pass; the
+"Wait for service stability" step blocks until the new task is healthy
+and the old one drained (~2-3 min). If either fails:
+- **AccessDenied on UpdateService:** the policy didn't attach — recheck
+  step 8.2.
+- **`waiter ServicesStable failed`:** the new task is unhealthy.
+  Check the ECS service event log and the CloudWatch log group
+  `/ecs/profiler-saas-dev/api`.

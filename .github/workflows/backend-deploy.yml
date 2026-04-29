@@ -21,6 +21,8 @@ concurrency:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: matchlogic-profiling-saas/api
+  ECS_CLUSTER: profiler-saas-dev
+  ECS_SERVICE: profiler-saas-dev-api
 
 jobs:
   build-and-push:
@@ -64,3 +66,23 @@ jobs:
           echo "Image pushed:"
           echo "  ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY }}:sha-${{ github.sha }}"
           echo "  ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest"
+
+      # The task definition references the :latest tag, so pulling a fresh
+      # image requires forcing ECS to start a new task (it doesn't auto-poll
+      # ECR). --force-new-deployment is the simplest way; ECS spins up the
+      # new task, waits for ALB target-group health, then drains the old.
+      - name: Force ECS service redeploy
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --force-new-deployment \
+            --no-cli-pager > /dev/null
+          echo "Triggered redeploy of $ECS_SERVICE on $ECS_CLUSTER."
+
+      - name: Wait for service stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE"
+          echo "Service is stable — new task is healthy and old task drained."
