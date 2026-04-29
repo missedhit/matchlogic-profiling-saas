@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  MatchLogic Profiling SaaS — S3 bucket for uploaded files and exported
+  profile results. M2 step 1 scope. Single bucket with two key prefixes
+  to keep IAM scoping simple: `uploads/<fileId>.<ext>` (raw user uploads,
+  expire after 7 days) and `results/<jobId>.<json|csv>` (exported
+  profile results, expire after 30 days). Public access fully blocked;
+  the only write path is via presigned PUT URLs minted by the API for
+  the `uploads/` prefix. CORS allows browser-direct PUTs from the
+  current local-dev origin and the future production frontend origin.
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, prod]
+    Default: dev
+    Description: Environment suffix used in resource names.
+
+  LocalDevOrigin:
+    Type: String
+    Default: http://localhost:3000
+    Description: Browser origin for the locally-running Next.js dev server.
+                 Used for CORS so the browser can PUT directly to S3 from
+                 the dev frontend.
+
+  ProductionFrontendOrigin:
+    Type: String
+    Default: https://app.profiler.matchlogic.io
+    Description: Browser origin for the deployed frontend. Pre-allowed
+                 here even though the FE is not deployed yet, so we do
+                 not need to revisit this stack when it ships.
+
+Resources:
+
+  # ---------------------------------------------------------------------
+  # Upload + results bucket. DeletionPolicy: Retain so that an accidental
+  # `cloudformation delete-stack` does NOT take user data with it; the
+  # operator has to empty + delete the bucket explicitly. Bucket name is
+  # account-ID-suffixed to guarantee global uniqueness without coordination.
+  # ---------------------------------------------------------------------
+  UploadsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "profiler-saas-uploads-${Environment}-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+            BucketKeyEnabled: true
+      VersioningConfiguration:
+        Status: Suspended
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireUploadsAfter7Days
+            Status: Enabled
+            Prefix: uploads/
+            ExpirationInDays: 7
+          - Id: ExpireResultsAfter30Days
+            Status: Enabled
+            Prefix: results/
+            ExpirationInDays: 30
+          - Id: AbortIncompleteMultipartUploadsAfter1Day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+      CorsConfiguration:
+        CorsRules:
+          - Id: AllowBrowserPresignedPut
+            AllowedOrigins:
+              - !Ref LocalDevOrigin
+              - !Ref ProductionFrontendOrigin
+            AllowedMethods:
+              - PUT
+              - GET
+              - HEAD
+            AllowedHeaders:
+              - "*"
+            ExposedHeaders:
+              - ETag
+            MaxAge: 3000
+      Tags:
+        - Key: Project
+          Value: profiler-saas
+        - Key: Environment
+          Value: !Ref Environment
+
+Outputs:
+  BucketName:
+    Description: S3 bucket name. Drop this into SSM param /profiler-saas/dev/s3/uploads-bucket.
+    Value: !Ref UploadsBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketName"
+
+  BucketArn:
+    Description: S3 bucket ARN — used by the ECS task role policy to scope s3:* actions.
+    Value: !GetAtt UploadsBucket.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketArn"
+
+  BucketRegionalDomainName:
+    Description: Regional DNS name (S3 virtual-hosted-style endpoint).
+    Value: !GetAtt UploadsBucket.RegionalDomainName
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketRegionalDomainName"

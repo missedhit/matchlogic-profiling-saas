@@ -11,8 +11,10 @@ using MatchLogic.Api.Handlers.DataSource.Preview.Data;
 using MatchLogic.Api.Handlers.DataSource.Preview.Tables;
 using MatchLogic.Api.Handlers.DataSource.TestConnection;
 using MatchLogic.Api.Handlers.DataSource.Update;
+using MatchLogic.Api.Handlers.File.Confirm;
 using MatchLogic.Api.Handlers.File.Delete;
 using MatchLogic.Api.Handlers.File.List;
+using MatchLogic.Api.Handlers.File.PresignedUpload;
 using MatchLogic.Api.Handlers.File.Upload;
 using MatchLogic.Domain.Project;
 using Microsoft.AspNetCore.Builder;
@@ -35,7 +37,7 @@ public static class DataImportEndpoints
         var group = builder.MapGroup($"api/{PATH}")
         .WithTags("Data Import");
 
-        //Upload File
+        //Upload File (legacy multipart path — kept while frontend transitions to presigned PUT, M2)
         group.MapPost("/File", async (IFormFile File, Guid ProjectId, string SourceType, IMediator mediator) =>
         {
             return await mediator.Send(new FileUploadRequest()
@@ -45,6 +47,27 @@ public static class DataImportEndpoints
         .Accepts<IFormFile>(MediaTypeNames.Multipart.FormData)
         .Produces<FileUploadResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError)
+        .RequireAuthorization(AppPermissions.DataImport.Execute);
+
+        // Mint presigned PUT URL for browser-direct upload to S3 (M2)
+        group.MapPost("/File/PresignedUpload", async (PresignedUploadRequest request, IMediator mediator) =>
+        {
+            return await mediator.Send(request);
+        })
+        .Produces<PresignedUploadResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError)
+        .RequireAuthorization(AppPermissions.DataImport.Execute);
+
+        // Confirm S3 upload completed; persists FileImport doc + returns metadata (M2)
+        group.MapPost("/File/Confirm", async (ConfirmUploadRequest request, IMediator mediator) =>
+        {
+            return await mediator.Send(request);
+        })
+        .Produces<FileUploadResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status500InternalServerError)
         .RequireAuthorization(AppPermissions.DataImport.Execute);
         // Get All Files

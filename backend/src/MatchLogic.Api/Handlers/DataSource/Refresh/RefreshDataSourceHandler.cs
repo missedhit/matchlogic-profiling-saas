@@ -1,19 +1,17 @@
-﻿using MatchLogic.Api.Handlers.DataSource.Base;
 using MatchLogic.Application.Features.Project;
 using MatchLogic.Application.Interfaces.Project;
 using MatchLogic.Domain.Import;
 using MatchLogic.Domain.Project;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MatchLogic.Api.Handlers.DataSource.Refresh;
 
-public class RefreshDataSourceHandler(IProjectService projectService, ILogger<RefreshDataSourceHandler> logger) : BaseConnectionInfoHandler, IRequestHandler<RefreshDataSourceRequest, Result<RefreshDataSourceResponse>>
-{   
+public class RefreshDataSourceHandler(IProjectService projectService, ILogger<RefreshDataSourceHandler> logger)
+    : IRequestHandler<RefreshDataSourceRequest, Result<RefreshDataSourceResponse>>
+{
     public async Task<Result<RefreshDataSourceResponse>> Handle(RefreshDataSourceRequest request, CancellationToken cancellationToken)
     {
         logger.LogInformation("RefreshDataSourceResponse: Configuring ConnectionInfo with : {Request}", request);

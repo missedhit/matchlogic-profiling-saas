@@ -7,6 +7,7 @@ using MatchLogic.Application.Interfaces.Import;
 using MatchLogic.Application.Interfaces.Persistence;
 using MatchLogic.Application.Interfaces.Project;
 using MatchLogic.Application.Interfaces.Security;
+using MatchLogic.Application.Interfaces.Storage;
 using MatchLogic.Domain.Import;
 using MatchLogic.Domain.Project;
 using MatchLogic.Infrastructure.Project.Commands;
@@ -33,6 +34,7 @@ public class DataImportCommand : BaseCommand
     private readonly IGenericRepository<DataSnapshot, Guid> _snapshotRepo;
     private readonly IGenericRepository<FileImport, Guid> _fileImportRepo;
     private readonly RemoteFileConnectorFactory _remoteFileConnectorFactory;
+    private readonly IFileSourceResolver _fileSourceResolver;
 
     public DataImportCommand(
         IDataSourceService dataSourceService,
@@ -48,6 +50,7 @@ public class DataImportCommand : BaseCommand
         ISecureParameterHandler secureParameterHandler,
         IOAuthTokenService oauthTokenService,
         RemoteFileConnectorFactory remoteFileConnectorFactory,
+        IFileSourceResolver fileSourceResolver,
         IGenericRepository<DataSnapshot, Guid> snapshotRepo = null,
         IGenericRepository<FileImport, Guid> fileImportRepo = null,
         ISchemaValidationService schemaValidation = null)
@@ -62,6 +65,7 @@ public class DataImportCommand : BaseCommand
         _secureParameterHandler = secureParameterHandler;
         _oauthTokenService = oauthTokenService;
         _remoteFileConnectorFactory = remoteFileConnectorFactory;
+        _fileSourceResolver = fileSourceResolver;
         _snapshotRepo = snapshotRepo;
         _fileImportRepo = fileImportRepo;
         _schemaValidation = schemaValidation;
@@ -129,12 +133,21 @@ public class DataImportCommand : BaseCommand
                 throw new InvalidOperationException("File type does not match datasource type.");
         }
 
-        // Step 4: Prepare the reader arguments, including fileImport if present
+        // Step 4: Prepare the reader arguments, including fileImport if present.
+        // For file uploads, resolve the source via IFileSourceResolver — that
+        // downloads the S3 object to /tmp (returning a lease that deletes it
+        // when disposed). The lease is held until the reader is fully consumed
+        // (end of this method).
+        IAsyncDisposable fileLease = NoopAsyncDisposable.Instance;
         if (fileImport != null)
         {
             decryptedParameters["FileId"] = fileImport.Id.ToString();
-            decryptedParameters["FilePath"] = fileImport.FilePath;
+            var lease = await _fileSourceResolver.ResolveAsync(fileImport.Id, cancellationToken);
+            decryptedParameters["FilePath"] = lease.LocalPath;
+            fileLease = lease;
         }
+
+        await using var _fileLeaseScope = fileLease;
 
         var reader = _connectionBuilder
             .WithArgs(dataSource.Type, decryptedParameters, dataSource.Configuration)
@@ -170,7 +183,7 @@ public class DataImportCommand : BaseCommand
             SchemaSignature = dataSource.SchemaSignature!,
             StoragePrefix = DatasetNames.SnapshotRows(snapshotId),
             Watermark = fileImport != null
-            ? $"{{\"fileId\":\"{fileImport.Id}\",\"path\":\"{fileImport.FilePath}\"}}"
+            ? $"{{\"fileId\":\"{fileImport.Id}\",\"s3Key\":\"{fileImport.S3Key}\"}}"
                 : null
         };
 
@@ -244,6 +257,12 @@ public class DataImportCommand : BaseCommand
 
     private static bool IsRemoteSource(DataSourceType type)
         => type >= DataSourceType.FTP;
+
+    private sealed class NoopAsyncDisposable : IAsyncDisposable
+    {
+        public static readonly NoopAsyncDisposable Instance = new();
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+    }
 
     private async Task<StoredFileMetadata?> TryGetRemoteFileMetadata(
         DataSourceType type,

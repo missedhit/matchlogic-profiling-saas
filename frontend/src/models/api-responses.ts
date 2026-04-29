@@ -31,10 +31,28 @@ export interface UploadedFile {
 	dataSourceType: keyof typeof SupportedData;
 	fileName: string;
 	originalName: string;
+	/** Legacy local-disk path. Empty for files uploaded via the M2 presigned-PUT flow. */
 	filePath: string;
 	fileSize: number;
 	fileExtension: string;
 	createdAt: Date;
+	/** S3 object key (e.g. "uploads/<id>.csv"). Set for M2 uploads, empty for legacy multipart. */
+	s3Key: string;
+}
+
+export interface PresignedUploadResponseValue {
+	fileId: string;
+	projectId: string;
+	dataSourceType: keyof typeof SupportedData;
+	originalName: string;
+	fileExtension: string;
+	s3Key: string;
+	presignedUrl: string;
+	expiresAt: string;
+}
+
+export interface PresignedUploadResponse extends BasicResponse {
+	value: PresignedUploadResponseValue;
 }
 
 export interface DatabaseConnection {

@@ -48,6 +48,13 @@ Parameters:
                  *.profiler.matchlogic.io). Leave empty to keep HTTP-only;
                  fill in after step 6 cert issues to add HTTPS + redirect.
 
+  UploadsBucketName:
+    Type: String
+    Default: profiler-saas-uploads-dev-274020917421
+    Description: S3 bucket holding user uploads + exported profile results
+                 (created by the storage.yml stack, M2 step 1). Used to
+                 scope the TaskRole's S3 IAM policy.
+
 Conditions:
   HasCertificate: !Not [!Equals [!Ref CertificateArn, ""]]
 
@@ -300,9 +307,10 @@ Resources:
                   StringEquals:
                     kms:ViaService: !Sub "ssm.${AWS::Region}.amazonaws.com"
 
-  # The role the running container assumes. Empty for now — all AWS-side
-  # access (Cognito JWKS fetch, etc.) happens via public endpoints. M2 will
-  # add S3 permissions here for the file upload bucket.
+  # The role the running container assumes. Read/write/delete on the
+  # uploads bucket (scoped to that one bucket); ListBucket so we can
+  # HEAD an object before downloading it. No KMS perms because the
+  # bucket uses SSE-S3 (AWS-managed keys).
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
@@ -313,6 +321,21 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
             Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AccessUploadsBucket
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub "arn:aws:s3:::${UploadsBucketName}/*"
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${UploadsBucketName}"
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -351,6 +374,10 @@ Resources:
               ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SsmParameterPrefix}/mongodb/progress-connection-string"
             - Name: MongoDB__Progress__DatabaseName
               ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SsmParameterPrefix}/mongodb/progress-database-name"
+            - Name: S3__BucketName
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SsmParameterPrefix}/s3/uploads-bucket"
+            - Name: S3__Region
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${SsmParameterPrefix}/s3/region"
           LogConfiguration:
             LogDriver: awslogs
             Options:

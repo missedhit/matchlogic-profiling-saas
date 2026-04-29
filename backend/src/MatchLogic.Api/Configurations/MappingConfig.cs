@@ -40,7 +40,8 @@ public static class MapsterConfiguration
             .Map(dest => dest.FilePath, src => src.FilePath)
             .Map(dest => dest.FileSize, src => src.FileSize)
             .Map(dest => dest.FileExtension, src => src.FileExtension)
-            .Map(dest => dest.CreatedDate, src => src.CreatedDate);
+            .Map(dest => dest.CreatedDate, src => src.CreatedDate)
+            .Map(dest => dest.S3Key, src => src.S3Key);
 
         config.NewConfig<RegexInfo, RegexInfoDTO>()
             .Map(dest => dest.Id, src => src.Id)

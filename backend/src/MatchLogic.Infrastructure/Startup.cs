@@ -16,6 +16,7 @@ using MatchLogic.Application.Interfaces.Project;
 using MatchLogic.Application.Interfaces.Regex;
 using MatchLogic.Application.Interfaces.Scheduling;
 using MatchLogic.Application.Interfaces.Security;
+using MatchLogic.Application.Interfaces.Storage;
 using MatchLogic.Domain.Dictionary;
 using MatchLogic.Domain.Entities.Common;
 using MatchLogic.Domain.Regex;
@@ -34,6 +35,9 @@ using MatchLogic.Infrastructure.Project.DataSource;
 using MatchLogic.Infrastructure.Repository;
 using MatchLogic.Infrastructure.Scheduling;
 using MatchLogic.Infrastructure.Security;
+using MatchLogic.Infrastructure.Storage;
+using Amazon;
+using Amazon.S3;
 using Hangfire;
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
@@ -90,6 +94,29 @@ public static class ApplicationSetup
         AddInfrastructureServices(services);
         AddDataProfiling(services);
         AddSchedulingServices(services, configuration);
+        AddS3Storage(services, configuration);
+
+        return services;
+    }
+
+    private static IServiceCollection AddS3Storage(
+        IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Bucket name + region come from SSM in deployed Fargate, appsettings.Development.json
+        // locally. AWS credentials resolve via the standard chain — task IAM role in Fargate,
+        // ~/.aws/credentials locally.
+        services.Configure<S3Options>(configuration.GetSection(S3Options.SectionName));
+
+        services.AddSingleton<IAmazonS3>(sp =>
+        {
+            var opts = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<S3Options>>().Value;
+            var region = string.IsNullOrWhiteSpace(opts.Region) ? "us-east-1" : opts.Region;
+            return new AmazonS3Client(RegionEndpoint.GetBySystemName(region));
+        });
+
+        services.AddSingleton<IFileStorageService, S3FileStorageService>();
+        services.AddScoped<IFileSourceResolver, FileSourceResolver>();
 
         return services;
     }

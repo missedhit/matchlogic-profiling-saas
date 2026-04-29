@@ -55,7 +55,7 @@ export const getDatabaseConnectionPayload = (uploadedFile: UploadedFile | null, 
 				Connection: {
 					type: SupportedData[uploadedFile?.dataSourceType!],
 					parameters: {
-						FilePath: uploadedFile?.filePath,
+						FileId: uploadedFile?.id,
 						SheetIndex: "-1",
 					}
 				}
@@ -64,7 +64,7 @@ export const getDatabaseConnectionPayload = (uploadedFile: UploadedFile | null, 
 			payload = {
 				type: SupportedData[uploadedFile?.dataSourceType!],
 				parameters: {
-					FilePath: uploadedFile?.filePath,
+					FileId: uploadedFile?.id,
 					SheetIndex: "-1",
 				}
 			}

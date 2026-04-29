@@ -51,7 +51,7 @@ export const useImportDatasourceMutation = () => {
 					Connection: {
 						type: SupportedData[uploadedFile?.dataSourceType!],
 						parameters: {
-							FilePath: uploadedFile?.filePath
+							FileId: uploadedFile?.id
 						}
 					},
 					dataSources
