@@ -108,12 +108,17 @@ public static class ApplicationSetup
         // ~/.aws/credentials locally.
         services.Configure<S3Options>(configuration.GetSection(S3Options.SectionName));
 
+        // Force SigV4 for presigned URLs. The .NET SDK has TWO knobs:
+        // (a) AmazonS3Config.SignatureVersion controls live API requests
+        // (b) AWSConfigsS3.UseSignatureVersion4 (global static) controls presigned URLs
+        // Without (b), GetPreSignedURL silently falls back to SigV2 for us-east-1 + the
+        // legacy s3.amazonaws.com global endpoint, which new buckets reject with 403.
+        Amazon.AWSConfigsS3.UseSignatureVersion4 = true;
+
         services.AddSingleton<IAmazonS3>(sp =>
         {
             var opts = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<S3Options>>().Value;
             var region = string.IsNullOrWhiteSpace(opts.Region) ? "us-east-1" : opts.Region;
-            // Force SigV4: the .NET SDK falls back to deprecated SigV2 for us-east-1 with
-            // the legacy s3.amazonaws.com global endpoint, which new S3 buckets reject (403).
             var config = new AmazonS3Config
             {
                 RegionEndpoint = RegionEndpoint.GetBySystemName(region),
