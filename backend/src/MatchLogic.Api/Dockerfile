@@ -30,11 +30,14 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
     dotnet restore src/MatchLogic.Api/MatchLogic.Api.csproj
 
 COPY . .
+# Don't use --no-restore: the BuildKit cache mount doesn't always survive
+# across GHA runners, so even when the restore-layer cache hits and produces
+# a valid project.assets.json, the actual package files in
+# /root/.nuget/packages/ may be missing. Let publish re-validate + repopulate.
 RUN --mount=type=cache,target=/root/.nuget/packages \
     dotnet publish src/MatchLogic.Api/MatchLogic.Api.csproj \
         -c Release \
         -o /app/publish \
-        --no-restore \
         /p:UseAppHost=false
 
 # ---- runtime stage -------------------------------------------------------
