@@ -25,7 +25,13 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       RepositoryName: !Ref RepositoryName
-      ImageTagMutability: IMMUTABLE
+      # MUTABLE so the workflow can move the floating :latest tag on each
+      # deploy. SHA-tagged images get re-pushed only on workflow re-runs of
+      # the same commit (a no-op semantically since the git SHA is itself
+      # immutable). For audit-grade immutability, switch to IMMUTABLE here
+      # and have the workflow render a new task-def revision per SHA
+      # instead of redeploying :latest.
+      ImageTagMutability: MUTABLE
       ImageScanningConfiguration:
         ScanOnPush: true
       EncryptionConfiguration:
