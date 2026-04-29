@@ -87,8 +87,9 @@ Sidebar collapses to these 3. No NextStepBanner, no pipeline-stage gating beyond
 | **§13 cleanup** | Dead config/packages/icons/artifacts removed; tests deleted; rebrand pass | ✅ Done |
 | **M1a** | Backend `CognitoJwtSetup` + JwtBearer package + dev appsettings | ✅ Done |
 | **M1b** | FE `CognitoProvider` shim + signup/login/verify/account pages + `useAuth`/`apiFetch` rewire | ✅ Done |
-| **M1c–d** | Provision Cognito/Atlas → Dockerfile/Fargate/CF/ACM/R53 | ⬜ Next |
-| **M2** | S3 upload flow + presigned PUTs + profile job runs end-to-end | ⬜ |
+| **M1c** | Provision Cognito/Atlas + smoke test end-to-end | ✅ Done |
+| **M1d** | Dockerfile + ECR + Fargate + ALB + ACM + Cloudflare DNS → `https://api.profiler.matchlogic.io` live | ✅ Done |
+| **M2** | S3 upload flow + presigned PUTs + profile job runs end-to-end | ⬜ Next |
 | **M3** | New `POST /api/DataProfile/Export/{projectId}/{dataSourceId}` (CSV/JSON) + UI button | ⬜ |
 | **M4** | WAF + Turnstile + IQuotaService + Redis token buckets + abuse scoring + GuardDuty | ⬜ |
 | **M5** | LastActiveTrackingMiddleware + AccountCleanupJob + Budgets kill-switch + dashboards | ⬜ |
