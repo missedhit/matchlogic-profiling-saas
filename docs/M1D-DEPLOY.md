@@ -430,6 +430,212 @@ later by repeating section 4.2.
 
 ---
 
-**Next: Step 6 — ACM certificate** for `*.profiler.matchlogic.io`,
-which we attach to the ALB in step 7 to enable HTTPS, then point
-Route 53 records at it.
+---
+
+## Step 6 — ACM certificate (DNS validation via Cloudflare)
+
+**Goal:** issue a public TLS certificate covering `*.profiler.matchlogic.io`,
+attach it to the ALB on a new HTTPS listener, and switch port 80 to
+redirect to HTTPS. After this step the ALB's auto-generated DNS name
+serves HTTPS (with a hostname-mismatch warning, which is fine — step 7
+gives it the friendly name).
+
+DNS for `matchlogic.io` lives at Cloudflare. ACM uses DNS validation
+(adds a CNAME, you copy it to Cloudflare, ACM polls until it sees the
+record, cert issues).
+
+### 6.1 — Request the certificate in ACM
+
+1. Open https://us-east-1.console.aws.amazon.com/acm/home → region must
+   read **N. Virginia**. ACM certificates are region-specific and the
+   ALB lives in us-east-1, so the cert must too.
+
+2. Click **Request a certificate** (orange button).
+
+3. **Certificate type:** select **Request a public certificate**. Click **Next**.
+
+4. **Domain names** — add a single entry:
+   - Click **Add another name to this certificate** isn't needed; the
+     first input box is enough.
+   - **Fully qualified domain name:** `*.profiler.matchlogic.io`
+   *(the wildcard covers `api.profiler.matchlogic.io` plus any other
+   subdomain we add later — `app.profiler.matchlogic.io` for the
+   frontend, etc.)*
+
+5. **Validation method:** **DNS validation** (default — keep it).
+
+6. **Key algorithm:** **RSA 2048** (default — keep it).
+
+7. Leave tags empty. Click **Request**.
+
+8. You land on the cert list. Status reads **Pending validation**.
+   Click the cert ID (a UUID-looking string) to open its detail page.
+
+### 6.2 — Capture the validation CNAME
+
+On the cert detail page, scroll down to the **Domains** section. You'll
+see one row with these columns:
+
+| Domain | Validation status | CNAME name | CNAME value |
+|---|---|---|---|
+| *.profiler.matchlogic.io | Pending validation | `_xxxxxxxx.profiler.matchlogic.io.` | `_yyyyyyyy.acm-validations.aws.` |
+
+Both the **CNAME name** and **CNAME value** are needed. Copy both to a
+notepad. The exact strings are unique per cert request.
+
+### 6.3 — Add the CNAME at Cloudflare
+
+1. Open https://dash.cloudflare.com → log in → click `matchlogic.io`.
+2. Left sidebar → **DNS** → **Records**.
+3. Click **Add record** (top of the records table).
+4. Fill in:
+   - **Type:** `CNAME`
+   - **Name:** the **CNAME name** value from ACM, **but strip the
+     `.profiler.matchlogic.io.` suffix off the end**. So if ACM says
+     `_abc123.profiler.matchlogic.io.`, you only paste `_abc123.profiler`.
+     *(Cloudflare automatically appends the zone name; if you paste the
+     full string Cloudflare will create
+     `_abc123.profiler.matchlogic.io.matchlogic.io` which won't validate.)*
+   - **Target:** the full **CNAME value** from ACM, **trailing dot
+     optional**. So paste `_yyyyyyyy.acm-validations.aws` (with or
+     without the trailing dot — Cloudflare normalizes it).
+   - **Proxy status:** **DNS only** (gray cloud — important; orange
+     cloud breaks ACM validation).
+   - **TTL:** Auto (default).
+5. Click **Save**.
+
+### 6.4 — Wait for the cert to issue
+
+Back in the ACM cert detail page, click the refresh icon next to the
+cert status every minute or so. Validation usually completes in
+**5-15 min**. Status will move from **Pending validation** → **Issued**.
+
+If it stays "Pending validation" for >30 min, the most common cause is
+the CNAME name was pasted with the wrong scope (full vs stripped — see
+6.3). Re-check the Cloudflare record and edit if needed.
+
+### 6.5 — Capture the certificate ARN
+
+Once issued, on the cert detail page copy the **ARN** value at the
+top — it looks like:
+
+```
+arn:aws:acm:us-east-1:274020917421:certificate/abcd1234-ef56-7890-abcd-1234567890ab
+```
+
+You'll paste this into the next sub-step.
+
+### 6.6 — Update the compute stack with the cert ARN
+
+1. Open https://us-east-1.console.aws.amazon.com/cloudformation/home →
+   click `profiler-saas-compute-dev`.
+
+2. Click **Update stack** (top-right) → **Make a direct update**.
+
+3. **Prepare template:** select **Use existing template** → click **Next**.
+
+4. **Specify stack details:** find the **CertificateArn** parameter
+   (currently empty). Paste the ARN from step 6.5 into the field.
+   Leave all other parameters unchanged. Click **Next**.
+
+5. **Configure stack options:** scroll to the bottom and click **Next**
+   (no IAM acknowledgement needed this time — we're not changing IAM).
+
+6. **Review:** scroll down. Under **Changes**, you should see two
+   actions:
+   - `HttpListener` — Modify (changes redirect from HTTPS)
+   - `HttpsListener` — Add
+
+   If the change preview shows anything else (cluster modify, service
+   modify, etc.), stop and paste the change set here so we can check
+   before applying.
+
+7. Click **Submit**.
+
+8. Wait for **UPDATE_COMPLETE** (~1 min — listeners are fast).
+
+### 6.7 — Verify HTTPS is live
+
+The ALB DNS name (long `*.elb.amazonaws.com` URL) now serves HTTPS,
+but with a **hostname mismatch warning** because the cert is for
+`*.profiler.matchlogic.io` not for the ALB's auto-generated name.
+That's expected — step 7 fixes it. To test that HTTPS is wired:
+
+```bash
+curl -ki https://<alb-dns>/api/HealthCheck/
+```
+
+The `-k` flag tells curl to ignore the cert mismatch warning. You
+should still get `HTTP/1.1 200 OK` with body `OK`. The redirect
+behavior is testable too:
+
+```bash
+curl -i http://<alb-dns>/api/HealthCheck/
+```
+
+That should now return `HTTP/1.1 301 Moved Permanently` with a
+`Location: https://<alb-dns>/api/HealthCheck/` header.
+
+---
+
+## Step 7 — Custom hostname via Cloudflare DNS
+
+**Goal:** `https://api.profiler.matchlogic.io/api/HealthCheck/`
+returns 200 OK. This is the M1d exit criterion.
+
+### 7.1 — Add the CNAME at Cloudflare
+
+1. Open https://dash.cloudflare.com → `matchlogic.io` → **DNS** →
+   **Records** → **Add record**.
+
+2. Fill in:
+   - **Type:** `CNAME`
+   - **Name:** `api.profiler` *(Cloudflare appends `.matchlogic.io`
+     to make `api.profiler.matchlogic.io`)*
+   - **Target:** the **AlbDnsName** from step 4.3 — e.g.
+     `profiler-saas-dev-alb-2006153364.us-east-1.elb.amazonaws.com`
+     (no `http://`, no trailing slash).
+   - **Proxy status:** **DNS only** (gray cloud). Orange-cloud (proxied)
+     would route via Cloudflare's CDN, which adds complexity (Cloudflare
+     terminates HTTPS with its own cert and re-fetches from the ALB).
+     For now keep it simple — DNS only.
+   - **TTL:** Auto.
+
+3. Click **Save**.
+
+### 7.2 — Wait for DNS to propagate (~1-5 min)
+
+Cloudflare DNS propagates fast, usually under a minute. To confirm:
+
+```bash
+nslookup api.profiler.matchlogic.io
+```
+
+Output should show a CNAME chain ending at `*.elb.amazonaws.com`.
+
+### 7.3 — Final smoke test
+
+```bash
+curl -i https://api.profiler.matchlogic.io/api/HealthCheck/
+```
+
+Expected:
+
+```
+HTTP/1.1 200 OK
+Server: Kestrel
+
+OK
+```
+
+🎉 **M1d done.** The API is live at `https://api.profiler.matchlogic.io`.
+
+### 7.4 — What's next
+
+- **M2** — file upload flow (S3 presigned PUTs, profile job triggers
+  end-to-end against the deployed API).
+- **M3** — `POST /api/DataProfile/Export/{projectId}/{dataSourceId}`
+  (CSV/JSON export endpoint + UI button).
+- **Pre-launch** — replace `0.0.0.0/0` Atlas allowlist with VPC peering
+  or static NAT IP, migrate IAM static keys to OIDC federation, set
+  Cognito deletion protection ON, wire SES properly.
