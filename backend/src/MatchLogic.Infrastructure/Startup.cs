@@ -112,7 +112,14 @@ public static class ApplicationSetup
         {
             var opts = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<S3Options>>().Value;
             var region = string.IsNullOrWhiteSpace(opts.Region) ? "us-east-1" : opts.Region;
-            return new AmazonS3Client(RegionEndpoint.GetBySystemName(region));
+            // Force SigV4: the .NET SDK falls back to deprecated SigV2 for us-east-1 with
+            // the legacy s3.amazonaws.com global endpoint, which new S3 buckets reject (403).
+            var config = new AmazonS3Config
+            {
+                RegionEndpoint = RegionEndpoint.GetBySystemName(region),
+                SignatureVersion = "4",
+            };
+            return new AmazonS3Client(config);
         });
 
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
